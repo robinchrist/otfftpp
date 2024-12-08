@@ -20,7 +20,7 @@
 
 //=============================================================================
 
-#include "otfft_complex.h"
+#include "otfftpp/otfft_complex.h"
 #include <complex>
 #include <cmath>
 #include <new>

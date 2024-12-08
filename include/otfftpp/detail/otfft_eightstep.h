@@ -9,7 +9,7 @@
 #ifndef otfft_eightstep_h
 #define otfft_eightstep_h
 
-#include "otfft_sixstep.h"
+#include "otfftpp/detail/otfft_sixstep.h"
 
 namespace OTFFT {
 

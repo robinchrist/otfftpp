@@ -6,8 +6,8 @@
 // from OK Ojisan(Takuya OKAHISA), source: http://www.moon.sannet.ne.jp/okahisa/stockham/stockham.html
 
 #pragma once
-#include "otfft_if.h"
-#include "otfft.h"
+#include "otfftpp/detail/otfft_if.h"
+#include "otfftpp/otfft.h"
 
 namespace OTFFT
 {

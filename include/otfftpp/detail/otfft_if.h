@@ -6,7 +6,7 @@
 // from OK Ojisan(Takuya OKAHISA), source: http://www.moon.sannet.ne.jp/okahisa/stockham/stockham.html
 
 #pragma once
-#include "otfft_complex.h"
+#include "otfftpp/otfft_complex.h"
 
 namespace OTFFT
 {

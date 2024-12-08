@@ -9,7 +9,7 @@
 #ifndef otfft_sixstep_h
 #define otfft_sixstep_h
 
-#include "otfft_avxdif8.h"
+#include "otfftpp/detail/otfft_avxdif8.h"
 
 namespace OTFFT {
 

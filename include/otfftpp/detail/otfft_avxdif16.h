@@ -9,8 +9,8 @@
 #ifndef otfft_avxdif16_h
 #define otfft_avxdif16_h
 
-#include "otfft_avxdif8.h"
-#include "otfft_avxdif16omp.h"
+#include "otfftpp/detail/otfft_avxdif8.h"
+#include "otfftpp/detail/otfft_avxdif16omp.h"
 
 namespace OTFFT {
 

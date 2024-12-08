@@ -6,9 +6,9 @@
 *  http://opensource.org/licenses/mit-license.php
 ******************************************************************************/
 
-#include "otfft.h"
-#include "otfft_misc.h"
-#include "otfft_platform.h"
+#include "otfftpp/otfft.h"
+#include "otfftpp/detail/otfft_misc.h"
+#include "otfftpp/detail/otfft_platform.h"
 
 #include <thread>
 #include <array>
@@ -40,8 +40,8 @@
 #endif
 
 
-#include "otfft_if.h"
-#include "otfft_base.h"
+#include "otfftpp/detail/otfft_if.h"
+#include "otfftpp/detail/otfft_base.h"
 
 
 namespace OTFFT

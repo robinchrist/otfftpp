@@ -29,7 +29,6 @@ target_sources(
             HEADERS
         BASE_DIRS
             include
-            inc
 )
 
 if(OTFFTPP_WITH_OPENMP)

@@ -9,7 +9,7 @@
 #ifndef otfft_mixedradix_h
 #define otfft_mixedradix_h
 
-#include "otfft_misc.h"
+#include "otfftpp/detail/otfft_misc.h"
 
 namespace OTFFT {
 

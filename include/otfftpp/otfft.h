@@ -9,8 +9,8 @@
 #ifndef otfft_h
 #define otfft_h
 
-#include "otfft_fwd.h"
-#include "otfft_complex.h"
+#include "otfftpp/otfft_fwd.h"
+#include "otfftpp/otfft_complex.h"
 
 #include <memory>
 #include <cstdlib>
