@@ -45,13 +45,13 @@ constexpr double H1Y = -0.382683432365089757574419179753100195;
 
 enum scaling_mode { scale_1 = 0, scale_unitary, scale_length };
 
-static inline complex_t v8x(const complex_t& z) NOEXCEPT force_inline;
-static inline complex_t v8x(const complex_t& z) NOEXCEPT
+static inline complex_t v8x(const complex_t& z) noexcept force_inline;
+static inline complex_t v8x(const complex_t& z) noexcept
 {
     return complex_t(M_SQRT1_2*(z.Re-z.Im), M_SQRT1_2*(z.Re+z.Im));
 }
-static inline complex_t w8x(const complex_t& z) NOEXCEPT force_inline;
-static inline complex_t w8x(const complex_t& z) NOEXCEPT
+static inline complex_t w8x(const complex_t& z) noexcept force_inline;
+static inline complex_t w8x(const complex_t& z) noexcept
 {
     return complex_t(M_SQRT1_2*(z.Re+z.Im), M_SQRT1_2*(z.Im-z.Re));
 }
