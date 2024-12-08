@@ -12,9 +12,7 @@ namespace OTFFT
     class RealFFT;
     class RealDCT;
 
-    class unique_ptr_delete;
-
-    using ComplexFFTPtr = std::unique_ptr<ComplexFFT, unique_ptr_delete>;
-    using RealFFTPtr = std::unique_ptr<RealFFT, unique_ptr_delete>;
-    using RealDCTPtr = std::unique_ptr<RealDCT, unique_ptr_delete>;
+    using ComplexFFTPtr = std::unique_ptr<ComplexFFT>;
+    using RealFFTPtr = std::unique_ptr<RealFFT>;
+    using RealDCTPtr = std::unique_ptr<RealDCT>;
 }

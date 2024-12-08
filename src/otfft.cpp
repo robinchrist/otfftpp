@@ -43,46 +43,30 @@
 
 #include "otfft_if.h"
 #include "otfft_base.h"
-#include "otfft_factory.h"
 
 
 namespace OTFFT
 {
-    void unique_ptr_delete::operator()(ComplexFFT *raw_pointer)
-    {
-        return OTFFT_AVX2::unique_ptr_deleter(raw_pointer);
-    }
-
-    void unique_ptr_delete::operator()(RealFFT *raw_pointer)
-    {
-        return OTFFT_AVX2::unique_ptr_deleter(raw_pointer);
-    }
-
-    void unique_ptr_delete::operator()(RealDCT *raw_pointer)
-    {
-        return OTFFT_AVX2::unique_ptr_deleter(raw_pointer);
-    }
-
     namespace Factory
     {
-        ComplexFFTPtr createComplexFFT(int n, OptimizationType t)
+        ComplexFFTPtr createComplexFFT(int n)
         {
-            return ComplexFFTPtr(OTFFT_AVX2::Factory::createComplexFFT(n));
+            return ComplexFFTPtr(new FFT(n));
         }
 
-        RealFFTPtr createRealFFT(int n, OptimizationType t)
+        RealFFTPtr createRealFFT(int n)
         {
-            return RealFFTPtr(OTFFT_AVX2::Factory::createRealFFT(n));
+            return RealFFTPtr(new RFFT(n));
         }
 
-        RealDCTPtr createDCT(int n, OptimizationType t)
+        RealDCTPtr createDCT(int n)
         {
-            return RealDCTPtr(OTFFT_AVX2::Factory::createDCT(n));
+            return RealDCTPtr(new DCT(n));
         }
 
-        ComplexFFTPtr createBluesteinFFT(int n, OptimizationType t)
+        ComplexFFTPtr createBluesteinFFT(int n)
         {
-            return ComplexFFTPtr(OTFFT_AVX2::Factory::createBluesteinFFT(n));
+            return ComplexFFTPtr(new Bluestein(n));
         }
     }
 }

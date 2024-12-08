@@ -11,7 +11,7 @@
 
 #include "otfft_avxdif8.h"
 
-namespace OTFFT_NAMESPACE {
+namespace OTFFT {
 
 namespace OTFFT_FourStep = OTFFT_AVXDIF8;
 

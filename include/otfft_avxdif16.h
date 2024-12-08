@@ -12,7 +12,7 @@
 #include "otfft_avxdif8.h"
 #include "otfft_avxdif16omp.h"
 
-namespace OTFFT_NAMESPACE {
+namespace OTFFT {
 
 namespace OTFFT_AVXDIF16 { ////////////////////////////////////////////////////
 

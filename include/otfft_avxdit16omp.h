@@ -11,7 +11,7 @@
 
 #include "otfft_avxdit8omp.h"
 
-namespace OTFFT_NAMESPACE {
+namespace OTFFT {
 
 namespace OTFFT_AVXDIT16omp { /////////////////////////////////////////////////
 

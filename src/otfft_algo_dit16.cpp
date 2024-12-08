@@ -14,7 +14,7 @@
 #include <stdint.h>
 #include <iostream>
 
-namespace OTFFT_NAMESPACE
+namespace OTFFT
 {
     namespace OTFFT_AVXDIT16
     {

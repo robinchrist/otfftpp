@@ -32,20 +32,6 @@ namespace OTFFT
         TRANSFORM_BLUESTEIN
     };
 
-    enum class OptimizationType
-    {
-        OPTIMIZED_FFT_AUTO,
-#ifdef OTFFT_WITH_SSE2
-        OPTIMIZED_FFT_SSE2,
-#endif
-#ifdef OTFFT_WITH_AVX
-        OPTIMIZED_FFT_AVX,
-#endif
-#ifdef OTFFT_WITH_AVX2
-        OPTIMIZED_FFT_AVX2
-#endif
-    };
-
     /**
      * @brief Complex In-Place Discrete Fourier Transform
      */
@@ -178,34 +164,6 @@ namespace OTFFT
          */
         virtual void invn(double_vector x) const noexcept = 0;
     };
-
-    // The following are the custom delete functors used by unique_ptr
-    // for the FFT classes.
-    class unique_ptr_delete
-    {
-    public:
-        void operator()(ComplexFFT *raw_pointer);
-        void operator()(RealFFT *raw_pointer);
-        void operator()(RealDCT *raw_pointer);
-    };
-
-    /**
-     * @brief Create a transformation instance with an optional sequence length
-     *
-     * The sequence length has to be an even number (up to 2^30) if transformation type is one of:
-     *      - ComplexFFT
-     *      - RealFFT
-     *      - DCT
-     *
-     * NOTE: The Bluestein's ComplexFFT supports sequence length of any natural number of 2^28 or less.
-     */
-    namespace Factory
-    {
-        ComplexFFTPtr createComplexFFT(int n = 0, OptimizationType t = OptimizationType::OPTIMIZED_FFT_AUTO);
-        RealFFTPtr createRealFFT(int n = 0, OptimizationType t = OptimizationType::OPTIMIZED_FFT_AUTO);
-        RealDCTPtr createDCT(int n = 0, OptimizationType t = OptimizationType::OPTIMIZED_FFT_AUTO);
-        ComplexFFTPtr createBluesteinFFT(int n = 0, OptimizationType t = OptimizationType::OPTIMIZED_FFT_AUTO);
-    }
 }
 
 #endif // otfft_h

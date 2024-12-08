@@ -12,7 +12,7 @@
 #include <stdint.h>
 #include <iostream>
 
-namespace OTFFT_NAMESPACE
+namespace OTFFT
 {
     using namespace OTFFT_MISC;
 
@@ -1063,44 +1063,6 @@ namespace OTFFT_NAMESPACE
             #pragma omp parallel for schedule(static)
             for (int p = 0; p < N; p++)
                 setpz(x[p], mulpd(rN, mulpz(getpz(a[p]), cnjpz(getpz(x[p])))));
-        }
-    }
-
-    void unique_ptr_deleter(ComplexFFT *raw_pointer)
-    {
-        delete raw_pointer;
-    }
-
-    void unique_ptr_deleter(RealFFT *raw_pointer)
-    {
-        delete raw_pointer;
-    }
-
-    void unique_ptr_deleter(RealDCT *raw_pointer)
-    {
-        delete raw_pointer;
-    }
-
-    namespace Factory
-    {
-        ComplexFFT* createComplexFFT(int n)
-        {
-            return new FFT(n);
-        }
-
-        RealFFT* createRealFFT(int n)
-        {
-            return new RFFT(n);
-        }
-
-        RealDCT* createDCT(int n)
-        {
-            return new DCT(n);
-        }
-
-        ComplexFFT* createBluesteinFFT(int n)
-        {
-            return new Bluestein(n);
         }
     }
 }
