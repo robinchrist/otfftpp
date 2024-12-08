@@ -5,20 +5,26 @@
 // based on Stockham FFT algorithm
 // from OK Ojisan(Takuya OKAHISA), source: http://www.moon.sannet.ne.jp/okahisa/stockham/stockham.html
 
-using namespace OTFFT;
+#pragma once
+#include "otfft_complex.h"
 
-typedef struct FFT_IF
+namespace OTFFT_AVX2
 {
-    virtual ~FFT_IF() = default;
+    using namespace OTFFT;
 
-    virtual void setup(int n) = 0;
-    virtual void setup2(int n) = 0;
-    virtual void fwd(complex_vector x, complex_vector y) const noexcept = 0;
-    virtual void fwd0(complex_vector x, complex_vector y) const noexcept = 0;
-    virtual void fwdu(complex_vector x, complex_vector y) const noexcept = 0;
-    virtual void fwdn(complex_vector x, complex_vector y) const noexcept = 0;
-    virtual void inv(complex_vector x, complex_vector y) const noexcept = 0;
-    virtual void inv0(complex_vector x, complex_vector y) const noexcept = 0;
-    virtual void invu(complex_vector x, complex_vector y) const noexcept = 0;
-    virtual void invn(complex_vector x, complex_vector y) const noexcept = 0;
-} FFT_IF;
+    typedef struct FFT_IF
+    {
+        virtual ~FFT_IF() = default;
+
+        virtual void setup(int n) = 0;
+        virtual void setup2(int n) = 0;
+        virtual void fwd(complex_vector x, complex_vector y) const noexcept = 0;
+        virtual void fwd0(complex_vector x, complex_vector y) const noexcept = 0;
+        virtual void fwdu(complex_vector x, complex_vector y) const noexcept = 0;
+        virtual void fwdn(complex_vector x, complex_vector y) const noexcept = 0;
+        virtual void inv(complex_vector x, complex_vector y) const noexcept = 0;
+        virtual void inv0(complex_vector x, complex_vector y) const noexcept = 0;
+        virtual void invu(complex_vector x, complex_vector y) const noexcept = 0;
+        virtual void invn(complex_vector x, complex_vector y) const noexcept = 0;
+    } FFT_IF;
+}

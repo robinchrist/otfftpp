@@ -41,9 +41,10 @@
 #endif
 
 
-#ifdef OTFFT_WITH_AVX2
-#include "otfft_avx2.h"
-#endif
+#include "otfft_if.h"
+#include "otfft_base.h"
+#include "otfft_factory.h"
+
 
 namespace OTFFT
 {

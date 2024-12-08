@@ -6,9 +6,9 @@
 #include "otfft.h"
 #include "otfft_platform.h"
 
-#ifdef USE_AVX2
-#include "otfft_avx2.h"
-#endif
+#include "otfft_if.h"
+#include "otfft_base.h"
+#include "otfft_factory.h"
 
 #include "otfft_avxdit8.h"
 

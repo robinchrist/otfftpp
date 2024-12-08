@@ -6,9 +6,9 @@
 #include "otfft.h"
 #include "otfft_platform.h"
 
-#ifdef USE_AVX2
-#include "otfft_avx2.h"
-#endif
+#include "otfft_if.h"
+#include "otfft_base.h"
+#include "otfft_factory.h"
 
 #include <cassert>
 #include <stdint.h>
@@ -16,6 +16,8 @@
 
 namespace OTFFT_NAMESPACE
 {
+    using namespace OTFFT_MISC;
+
     namespace OTFFT_AVXDIF4 { extern std::unique_ptr<FFT_IF> instance(); }
     namespace OTFFT_AVXDIT4 { extern std::unique_ptr<FFT_IF> instance(); }
     namespace OTFFT_AVXDIF8 { extern std::unique_ptr<FFT_IF> instance(); }

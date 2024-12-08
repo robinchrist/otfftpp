@@ -7,14 +7,20 @@
 //
 // NOTE: Do not include this file directly!
 
-void unique_ptr_deleter(OTFFT::ComplexFFT *raw_pointer);
-void unique_ptr_deleter(OTFFT::RealFFT *raw_pointer);
-void unique_ptr_deleter(OTFFT::RealDCT *raw_pointer);
+#pragma once
+#include "otfft.h"
 
-namespace Factory
+namespace OTFFT_AVX2
 {
-    OTFFT::ComplexFFT* createComplexFFT(int n = 0);
-    OTFFT::RealFFT* createRealFFT(int n = 0);
-    OTFFT::RealDCT* createDCT(int n = 0);
-    OTFFT::ComplexFFT* createBluesteinFFT(int n = 0);
+    void unique_ptr_deleter(OTFFT::ComplexFFT *raw_pointer);
+    void unique_ptr_deleter(OTFFT::RealFFT *raw_pointer);
+    void unique_ptr_deleter(OTFFT::RealDCT *raw_pointer);
+
+    namespace Factory
+    {
+        OTFFT::ComplexFFT* createComplexFFT(int n = 0);
+        OTFFT::RealFFT* createRealFFT(int n = 0);
+        OTFFT::RealDCT* createDCT(int n = 0);
+        OTFFT::ComplexFFT* createBluesteinFFT(int n = 0);
+    }
 }
