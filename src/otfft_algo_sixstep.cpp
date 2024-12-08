@@ -10,6 +10,7 @@
 #include "otfft_factory.h"
 
 #include "otfft_sixstep.h"
+#include "otfft_eightstep.h"
 
 #include <cassert>
 #include <stdint.h>
