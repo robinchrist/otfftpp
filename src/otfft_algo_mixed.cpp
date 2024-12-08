@@ -9,12 +9,6 @@
 #ifdef USE_AVX2
 #include "otfft_avx2.h"
 #endif
-#ifdef USE_AVX
-#include "otfft_avx.h"
-#endif
-#ifdef USE_SSE2
-#include "otfft_sse2.h"
-#endif
 
 #include "otfft_mixedradix.h"
 
