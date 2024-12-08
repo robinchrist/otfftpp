@@ -37,4 +37,4 @@ if(OTFFTPP_WITH_OPENMP)
     target_link_libraries (otfftpp PUBLIC OpenMP::OpenMP_CXX)
 endif()
 
-target_compile_definitions(otfftpp PRIVATE "USE_AVX2" "USE_AVX" "USE_SSE2" "OTFFT_NAMESPACE=OTFFT_AVX2" "USE_UNALIGNED_MEMORY=1")
+target_compile_definitions(otfftpp PRIVATE "USE_AVX2" "USE_AVX" "USE_SSE2" "OTFFT_NAMESPACE=OTFFT" "USE_UNALIGNED_MEMORY=1")

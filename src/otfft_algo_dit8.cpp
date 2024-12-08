@@ -7,7 +7,6 @@
 
 #include "otfft_if.h"
 #include "otfft_base.h"
-#include "otfft_factory.h"
 
 #include "otfft_avxdit8.h"
 

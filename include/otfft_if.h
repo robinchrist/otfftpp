@@ -8,7 +8,7 @@
 #pragma once
 #include "otfft_complex.h"
 
-namespace OTFFT_AVX2
+namespace OTFFT
 {
     using namespace OTFFT;
 

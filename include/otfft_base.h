@@ -9,7 +9,7 @@
 #include "otfft_if.h"
 #include "otfft.h"
 
-namespace OTFFT_AVX2
+namespace OTFFT
 {
     using namespace OTFFT;
 
