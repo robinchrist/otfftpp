@@ -12,6 +12,7 @@ add_library(otfftpp::otfftpp ALIAS otfftpp)
 target_sources(
     otfftpp
     PRIVATE
+        src/otfft.cpp
         src/otfft_algo.cpp
         src/otfft_algo_dif16.cpp
         src/otfft_algo_dif4.cpp
