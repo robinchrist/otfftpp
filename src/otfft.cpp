@@ -6,7 +6,6 @@
 *  http://opensource.org/licenses/mit-license.php
 ******************************************************************************/
 
-#include "otfft_config.h"
 #include "otfft.h"
 #include "otfft_misc.h"
 #include "otfft_platform.h"

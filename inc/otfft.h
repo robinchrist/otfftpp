@@ -9,7 +9,6 @@
 #ifndef otfft_h
 #define otfft_h
 
-#include "otfft_config.h"
 #include "otfft_fwd.h"
 #include "otfft_complex.h"
 

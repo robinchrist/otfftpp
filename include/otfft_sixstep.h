@@ -332,7 +332,4 @@ template <int log_N, int mode, bool sng = false> struct invffts
 
 }
 
-//#include "otfft_sixstepsq.h"
-//#include "otfft_eightstep.h"
-
 #endif // otfft_sixstep_h
