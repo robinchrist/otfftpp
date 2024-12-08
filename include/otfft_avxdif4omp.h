@@ -9,6 +9,9 @@
 #ifndef otfft_avxdif4omp_h
 #define otfft_avxdif4omp_h
 
+#include "otfft_complex.h"
+#include "otfft_misc.h"
+
 namespace OTFFT_NAMESPACE {
 
 namespace OTFFT_AVXDIF4omp { //////////////////////////////////////////////////

@@ -9,6 +9,8 @@
 #ifndef otfft_avxdif16omp_h
 #define otfft_avxdif16omp_h
 
+#include "otfft_avxdif8omp.h"
+
 namespace OTFFT_NAMESPACE {
 
 namespace OTFFT_AVXDIF16omp { /////////////////////////////////////////////////
