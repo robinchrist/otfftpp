@@ -1,7 +1,6 @@
 // Copyright DEWETRON GmbH 2017
 // based on OK-Ojisan Template FFT
 
-#include "otfft_types.h"
 #include "otfft_misc.h"
 #include "otfft.h"
 #include "otfft_platform.h"
