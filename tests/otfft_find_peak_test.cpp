@@ -1,5 +1,5 @@
 // Copyright (c) Dewetron 2017
-#include "otfft.h"
+#include "otfftpp/otfft.h"
 #include "otfft_test_utils.h"
 
 #include <boost/test/unit_test.hpp>
@@ -18,7 +18,7 @@ namespace
 
         std::vector<OTFFT::complex_t> spectrum(fft_length);
         {
-            auto fft = OTFFT::Factory::createRealFFT(static_cast<int>(fft_length));
+            auto fft = OTFFT::createRealFFT(static_cast<int>(fft_length));
             OTFFT::double_vector fft_in{generator.data()};
             OTFFT::complex_vector fft_out{spectrum.data()};
             fft->fwd(fft_in, fft_out);

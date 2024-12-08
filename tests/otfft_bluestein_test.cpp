@@ -1,5 +1,5 @@
 // Copyright (c) Dewetron 2017
-#include "otfft.h"
+#include "otfftpp/otfft.h"
 
 #include <boost/test/unit_test.hpp>
 
@@ -38,7 +38,7 @@ BOOST_AUTO_TEST_CASE(TestBluesteinEven)
         spectrum.emplace_back(n, n);
     }
 
-    auto fft = OTFFT::Factory::createBluesteinFFT(static_cast<int>(SIZE));
+    auto fft = OTFFT::createBluesteinFFT(static_cast<int>(SIZE));
     {
         OTFFT::complex_vector spectrum_pointer{spectrum.data()};
         fft->fwd0(spectrum_pointer);
@@ -124,7 +124,7 @@ BOOST_AUTO_TEST_CASE(TestBluesteinOdd)
         spectrum.emplace_back(n, n);
     }
 
-    auto fft = OTFFT::Factory::createBluesteinFFT(static_cast<int>(SIZE));
+    auto fft = OTFFT::createBluesteinFFT(static_cast<int>(SIZE));
     {
         OTFFT::complex_vector spectrum_pointer{spectrum.data()};
         fft->fwd0(spectrum_pointer);

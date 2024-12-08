@@ -1,5 +1,5 @@
 // Copyright (c) Dewetron 2017
-#include "otfft.h"
+#include "otfftpp/otfft.h"
 
 #include <boost/test/unit_test.hpp>
 
@@ -17,7 +17,7 @@ BOOST_AUTO_TEST_CASE(TestAlternatingOnes)
 
     std::vector<double> workspace(testArray, testArray + SIZE);
     {
-        auto dct = OTFFT::Factory::createDCT(static_cast<int>(SIZE));
+        auto dct = OTFFT::createDCT(static_cast<int>(SIZE));
         dct->fwd0(workspace.data());
         dct->invn(workspace.data());
     }
@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE(TestConstantInput)
 
     std::vector<double> workspace(testArray, testArray + SIZE);
     {
-        auto dct = OTFFT::Factory::createDCT(static_cast<int>(SIZE));
+        auto dct = OTFFT::createDCT(static_cast<int>(SIZE));
         dct->fwd0(workspace.data());
         dct->invn(workspace.data());
     }
@@ -53,7 +53,7 @@ BOOST_AUTO_TEST_CASE(TestCachedCosines)
 
     std::vector<double> workspace(testArray, testArray + SIZE);
     {
-        auto dct = OTFFT::Factory::createDCT(static_cast<int>(SIZE));
+        auto dct = OTFFT::createDCT(static_cast<int>(SIZE));
         dct->fwd0(workspace.data());
         dct->fwd0(workspace.data());
         dct->invn(workspace.data());

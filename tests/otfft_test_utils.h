@@ -1,7 +1,7 @@
 // Copyright (C) DEWETRON GmbH 2017
 #pragma once
 
-#include "otfft.h"
+#include "otfftpp/otfft.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>

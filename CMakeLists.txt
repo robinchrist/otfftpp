@@ -29,11 +29,41 @@ target_sources(
             HEADERS
         BASE_DIRS
             include
+        FILES
+            include/otfftpp/otfft_complex.h
+            include/otfftpp/otfft_fwd.h
+            include/otfftpp/otfft.h
+    PRIVATE
+        FILE_SET
+            otfftpp_private_headers
+        TYPE
+            HEADERS
+        BASE_DIRS
+            include
 )
 
 if(OTFFTPP_WITH_OPENMP)
     find_package (OpenMP REQUIRED)
     target_link_libraries (otfftpp PUBLIC OpenMP::OpenMP_CXX)
+else()
+    target_compile_definitions(otfftpp PRIVATE "DO_SINGLE_THREAD=1")
 endif()
 
+# Required for legacy reasons
 target_compile_definitions(otfftpp PRIVATE "USE_UNALIGNED_MEMORY=1")
+# This should handle some edge cases that would otherwise prevent optimization
+target_compile_options(otfftpp PRIVATE "-fno-math-errno")
+
+if(OTFFT_BUILD_TESTS)
+    message(STATUS "Testing is enabled!")
+    enable_testing()
+    add_subdirectory(tests)
+endif()
+
+
+install(
+    TARGETS 
+        otfftpp
+    FILE_SET
+        otfftpp_public_headers
+)

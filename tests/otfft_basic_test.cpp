@@ -1,5 +1,5 @@
 // Copyright (c) Dewetron 2017
-#include "otfft.h"
+#include "otfftpp/otfft.h"
 
 #include <boost/test/unit_test.hpp>
 
@@ -138,13 +138,13 @@ namespace
             BOOST_TEST_MESSAGE("FFTClass::start()");
             m_capsule.active = true;
 
-            m_capsule.fft.cfft = OTFFT::Factory::createComplexFFT(static_cast<int>(m_fft_size));
-            m_capsule.fft.bluestein = OTFFT::Factory::createBluesteinFFT(static_cast<int>(m_fft_size));
+            m_capsule.fft.cfft = OTFFT::createComplexFFT(static_cast<int>(m_fft_size));
+            m_capsule.fft.bluestein = OTFFT::createBluesteinFFT(static_cast<int>(m_fft_size));
 
             if ((m_fft_size & 1) == 0)
             {
-                m_capsule.fft.rfft = OTFFT::Factory::createRealFFT(static_cast<int>(m_fft_size));
-                m_capsule.fft.dct = OTFFT::Factory::createDCT(static_cast<int>(m_fft_size));
+                m_capsule.fft.rfft = OTFFT::createRealFFT(static_cast<int>(m_fft_size));
+                m_capsule.fft.dct = OTFFT::createDCT(static_cast<int>(m_fft_size));
             }
 
             m_thread = std::thread(ThreadHelper, this);

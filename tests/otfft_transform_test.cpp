@@ -1,5 +1,5 @@
 // Copyright (c) Dewetron 2017
-#include "otfft.h"
+#include "otfftpp/otfft.h"
 
 #undef VALGRIND_MEM_LEAK_DETECTION
 
@@ -24,7 +24,7 @@ namespace
 
         std::vector<OTFFT::complex_t> spectrum(SIZE);
         {
-            auto fft = OTFFT::Factory::createRealFFT(static_cast<int>(SIZE));
+            auto fft = OTFFT::createRealFFT(static_cast<int>(SIZE));
             OTFFT::double_vector fft_in{testArray};
             OTFFT::complex_vector fft_out{spectrum.data()};
             fft->fwd0(fft_in, fft_out);
@@ -61,7 +61,7 @@ namespace
 
         std::vector<OTFFT::complex_t> spectrum(SIZE);
         {
-            auto fft = OTFFT::Factory::createRealFFT(static_cast<int>(SIZE));
+            auto fft = OTFFT::createRealFFT(static_cast<int>(SIZE));
             OTFFT::double_vector fft_in{testArray};
             OTFFT::complex_vector fft_out{spectrum.data()};
             fft->fwd0(fft_in, fft_out);
@@ -98,7 +98,7 @@ namespace
         spectrum[0] = SIZE * 1.0;
         std::vector<double> output(SIZE);
         {
-            auto fft = OTFFT::Factory::createRealFFT(static_cast<int>(SIZE));
+            auto fft = OTFFT::createRealFFT(static_cast<int>(SIZE));
             OTFFT::complex_vector fft_in{spectrum.data()};
             OTFFT::double_vector fft_out{output.data()};
             fft->invn(fft_in, fft_out);
@@ -128,7 +128,7 @@ namespace
         std::vector<OTFFT::complex_t> spectrum(SIZE, 1.0);
         std::vector<double> output(SIZE);
         {
-            auto fft = OTFFT::Factory::createRealFFT(static_cast<int>(SIZE));
+            auto fft = OTFFT::createRealFFT(static_cast<int>(SIZE));
             OTFFT::complex_vector fft_in{spectrum.data()};
             OTFFT::double_vector fft_out{output.data()};
             fft->invn(fft_in, fft_out);
@@ -160,7 +160,7 @@ namespace
 
         std::vector<OTFFT::complex_t> spectrum(SIZE);
         {
-            auto fft = OTFFT::Factory::createRealFFT(static_cast<int>(SIZE));
+            auto fft = OTFFT::createRealFFT(static_cast<int>(SIZE));
             OTFFT::double_vector fft_in{testArray.data()};
             OTFFT::complex_vector fft_out{spectrum.data()};
             fft->fwd(fft_in, fft_out);
@@ -168,7 +168,7 @@ namespace
 
         std::vector<double> output(SIZE);
         {
-            auto fft = OTFFT::Factory::createRealFFT(static_cast<int>(SIZE));
+            auto fft = OTFFT::createRealFFT(static_cast<int>(SIZE));
             OTFFT::complex_vector fft_in{spectrum.data()};
             OTFFT::double_vector fft_out{output.data()};
             fft->inv(fft_in, fft_out);
@@ -189,14 +189,14 @@ namespace
                 std::vector<double> workspace_real(fft_size, 1.0);
                 std::vector<OTFFT::complex_t> workspace_complex(fft_size);
                 {
-                    auto fft = OTFFT::Factory::createRealFFT(static_cast<int>(fft_size));
+                    auto fft = OTFFT::createRealFFT(static_cast<int>(fft_size));
                     OTFFT::double_vector fft_in{workspace_real.data()};
                     OTFFT::complex_vector fft_out{workspace_complex.data()};
                     fft->fwd(fft_in, fft_out);
                 }
 
                 {
-                    auto fft = OTFFT::Factory::createRealFFT(static_cast<int>(fft_size));
+                    auto fft = OTFFT::createRealFFT(static_cast<int>(fft_size));
                     OTFFT::complex_vector fft_in{workspace_complex.data()};
                     OTFFT::double_vector fft_out{workspace_real.data()};
                     fft->inv(fft_in, fft_out);
@@ -207,13 +207,13 @@ namespace
             {
                 std::vector<OTFFT::complex_t> workspace(fft_size, OTFFT::complex_t(1.0, 1.0));
                 {
-                    auto fft = OTFFT::Factory::createComplexFFT(static_cast<int>(fft_size));
+                    auto fft = OTFFT::createComplexFFT(static_cast<int>(fft_size));
                     OTFFT::complex_vector workspace_ptr{workspace.data()};
                     fft->fwd(workspace_ptr);
                 }
 
                 {
-                    auto fft = OTFFT::Factory::createComplexFFT(static_cast<int>(fft_size));
+                    auto fft = OTFFT::createComplexFFT(static_cast<int>(fft_size));
                     OTFFT::complex_vector workspace_ptr{workspace.data()};
                     fft->inv(workspace_ptr);
                 }
@@ -223,13 +223,13 @@ namespace
             {
                 std::vector<double> workspace(fft_size, 1.0);
                 {
-                    auto fft = OTFFT::Factory::createDCT(static_cast<int>(fft_size));
+                    auto fft = OTFFT::createDCT(static_cast<int>(fft_size));
                     OTFFT::double_vector workspace_ptr{workspace.data()};
                     fft->fwd(workspace_ptr);
                 }
 
                 {
-                    auto fft = OTFFT::Factory::createDCT(static_cast<int>(fft_size));
+                    auto fft = OTFFT::createDCT(static_cast<int>(fft_size));
                     OTFFT::double_vector workspace_ptr{workspace.data()};
                     fft->inv(workspace_ptr);
                 }
@@ -239,13 +239,13 @@ namespace
             {
                 std::vector<OTFFT::complex_t> workspace(fft_size, OTFFT::complex_t(1.0, 1.0));
                 {
-                    auto fft = OTFFT::Factory::createBluesteinFFT(static_cast<int>(fft_size));
+                    auto fft = OTFFT::createBluesteinFFT(static_cast<int>(fft_size));
                     OTFFT::complex_vector workspace_ptr{workspace.data()};
                     fft->fwd(workspace_ptr);
                 }
 
                 {
-                    auto fft = OTFFT::Factory::createBluesteinFFT(static_cast<int>(fft_size));
+                    auto fft = OTFFT::createBluesteinFFT(static_cast<int>(fft_size));
                     OTFFT::complex_vector workspace_ptr{workspace.data()};
                     fft->inv(workspace_ptr);
                 }

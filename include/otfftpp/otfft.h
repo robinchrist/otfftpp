@@ -163,6 +163,14 @@ namespace OTFFT
          */
         virtual void invn(double_vector x) const noexcept = 0;
     };
+
+    ComplexFFTPtr createComplexFFT(int n);
+
+    RealFFTPtr createRealFFT(int n);
+
+    RealDCTPtr createDCT(int n);
+
+    ComplexFFTPtr createBluesteinFFT(int n);
 }
 
 #endif // otfft_h

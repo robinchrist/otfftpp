@@ -46,26 +46,23 @@
 
 namespace OTFFT
 {
-    namespace Factory
+    ComplexFFTPtr createComplexFFT(int n)
     {
-        ComplexFFTPtr createComplexFFT(int n)
-        {
-            return ComplexFFTPtr(new FFT(n));
-        }
+        return ComplexFFTPtr(new FFT(n));
+    }
 
-        RealFFTPtr createRealFFT(int n)
-        {
-            return RealFFTPtr(new RFFT(n));
-        }
+    RealFFTPtr createRealFFT(int n)
+    {
+        return RealFFTPtr(new RFFT(n));
+    }
 
-        RealDCTPtr createDCT(int n)
-        {
-            return RealDCTPtr(new DCT(n));
-        }
+    RealDCTPtr createDCT(int n)
+    {
+        return RealDCTPtr(new DCT(n));
+    }
 
-        ComplexFFTPtr createBluesteinFFT(int n)
-        {
-            return ComplexFFTPtr(new Bluestein(n));
-        }
+    ComplexFFTPtr createBluesteinFFT(int n)
+    {
+        return ComplexFFTPtr(new Bluestein(n));
     }
 }

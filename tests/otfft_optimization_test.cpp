@@ -1,5 +1,5 @@
 // Copyright (c) Dewetron 2017
-#include "otfft.h"
+#include "otfftpp/otfft.h"
 
 #include <boost/test/unit_test.hpp>
 
@@ -17,26 +17,6 @@
 
 namespace
 {
-    std::ostream& operator<<(std::ostream& out, OTFFT::OptimizationType OPT_TYPE)
-    {
-        switch (OPT_TYPE)
-        {
-#ifdef OTFFT_WITH_AVX
-        case OTFFT::OptimizationType::OPTIMIZED_FFT_AVX:
-            out << "AVX";
-            break;
-#endif
-#ifdef OTFFT_WITH_AVX2
-        case OTFFT::OptimizationType::OPTIMIZED_FFT_AVX2:
-            out << "AVX2";
-            break;
-#endif
-        case OTFFT::OptimizationType::OPTIMIZED_FFT_SSE2:
-            out << "SSE2";
-            break;
-        }
-        return out;
-    }
 
     std::ostream& operator<<(std::ostream& out, OTFFT::TransformationType TR_TYPE)
     {
@@ -48,11 +28,14 @@ namespace
         case OTFFT::TransformationType::TRANSFORM_FFT_COMPLEX:
             out << "FftComplex";
             break;
+        default:
+            out << "<Unhandled Transformation Type>";
+            break;
         }
         return out;
     }
 
-    template <OTFFT::TransformationType TR_TYPE, OTFFT::OptimizationType OPT_TYPE>
+    template <OTFFT::TransformationType TR_TYPE>
     void testComplexFFT(const std::size_t SIZE)
     {
         std::random_device rnd_device;
@@ -71,8 +54,8 @@ namespace
         std::vector<OTFFT::complex_t> spectrum = expected;
 
         auto fft = TR_TYPE == OTFFT::TransformationType::TRANSFORM_BLUESTEIN ?
-                       OTFFT::Factory::createBluesteinFFT(static_cast<int>(SIZE), OPT_TYPE) :
-                       OTFFT::Factory::createComplexFFT(static_cast<int>(SIZE), OPT_TYPE);
+                       OTFFT::createBluesteinFFT(static_cast<int>(SIZE)) :
+                       OTFFT::createComplexFFT(static_cast<int>(SIZE));
         {
             OTFFT::complex_vector spectrum_pointer{spectrum.data()};
             fft->fwd0(spectrum_pointer);
@@ -101,7 +84,7 @@ namespace
         }
     }
 
-    template <OTFFT::TransformationType TR_TYPE, OTFFT::OptimizationType OPT_TYPE>
+    template <OTFFT::TransformationType TR_TYPE>
     void testComplexSineFFT(const std::size_t SIZE)
     {
         std::vector<OTFFT::complex_t> sine;
@@ -117,15 +100,15 @@ namespace
         std::vector<OTFFT::complex_t> spectrum = sine;
 
         auto fft = TR_TYPE == OTFFT::TransformationType::TRANSFORM_BLUESTEIN ?
-            OTFFT::Factory::createBluesteinFFT(static_cast<int>(SIZE), OPT_TYPE) :
-            OTFFT::Factory::createComplexFFT(static_cast<int>(SIZE), OPT_TYPE);
+            OTFFT::createBluesteinFFT(static_cast<int>(SIZE)) :
+            OTFFT::createComplexFFT(static_cast<int>(SIZE));
         {
             OTFFT::complex_vector spectrum_pointer{ spectrum.data() };
             fft->fwdn(spectrum_pointer);
         }
 
         std::stringstream loc;
-        loc << "Error for size " << SIZE << " with " << OPT_TYPE << " and " << TR_TYPE << ": ";
+        loc << "Error for size " << SIZE << " with " << TR_TYPE << ": ";
 
         BOOST_CHECK_MESSAGE(OTFFT::abs(spectrum[0]) < 1e-3, loc.str() << "DC is " << OTFFT::abs(spectrum[0]));
 
@@ -138,7 +121,6 @@ namespace
         }
     }
 
-    template <OTFFT::OptimizationType OPT_TYPE>
     void testRealFFT(const std::size_t SIZE)
     {
         std::random_device rnd_device;
@@ -156,7 +138,7 @@ namespace
 
         std::vector<double> spectrum = expected;
 
-        auto fft = OTFFT::Factory::createRealFFT(static_cast<int>(SIZE), OPT_TYPE);
+        auto fft = OTFFT::createRealFFT(static_cast<int>(SIZE));
         {
             std::vector<OTFFT::complex_t> workspace(SIZE);
             OTFFT::double_vector spectrum_pointer{spectrum.data()};
@@ -178,7 +160,6 @@ namespace
         }
     }
 
-    template <OTFFT::OptimizationType OPT_TYPE>
     void testRealSineFFT(const std::size_t SIZE)
     {
         std::vector<double> sine;
@@ -193,7 +174,7 @@ namespace
 
         std::vector<OTFFT::complex_t> spectrum(sine.size());
 
-        auto fft = OTFFT::Factory::createRealFFT(static_cast<int>(SIZE), OPT_TYPE);
+        auto fft = OTFFT::createRealFFT(static_cast<int>(SIZE));
         {
             OTFFT::double_vector input_pointer{ sine.data() };
             OTFFT::complex_vector spectrum_pointer{ spectrum.data() };
@@ -201,7 +182,7 @@ namespace
         }
 
         std::stringstream loc;
-        loc << "Error for size " << SIZE << " with " << OPT_TYPE << ": ";
+        loc << "Error for size " << SIZE << ": ";
 
         const auto bin = spectrum[1] + spectrum[SIZE - 1];
         const double ampl_bin = OTFFT::abs(bin);
@@ -217,7 +198,6 @@ namespace
         }
     }
 
-    template <OTFFT::OptimizationType OPT_TYPE>
     void testDCT(const std::size_t SIZE)
     {
         std::random_device rnd_device;
@@ -234,7 +214,7 @@ namespace
 
         std::vector<double> spectrum = expected;
 
-        auto fft = OTFFT::Factory::createDCT(static_cast<int>(SIZE), OPT_TYPE);
+        auto fft = OTFFT::createDCT(static_cast<int>(SIZE));
         {
             OTFFT::double_vector spectrum_pointer{spectrum.data()};
             fft->fwd0(spectrum_pointer);
@@ -259,14 +239,12 @@ BOOST_AUTO_TEST_SUITE(otfft_optimization_test)
 
 BOOST_AUTO_TEST_CASE(TestPowerOfTwoSine)
 {
-#ifdef OTFFT_WITH_SSE2
     for (int n = 4; n <= (1 << 24); n <<= 2)
     {
-        testComplexSineFFT<OTFFT::TransformationType::TRANSFORM_FFT_COMPLEX, OTFFT::OptimizationType::OPTIMIZED_FFT_SSE2>(n);
-        testComplexSineFFT<OTFFT::TransformationType::TRANSFORM_BLUESTEIN, OTFFT::OptimizationType::OPTIMIZED_FFT_SSE2>(n);
-        testRealSineFFT<OTFFT::OptimizationType::OPTIMIZED_FFT_SSE2>(n);
+        testComplexSineFFT<OTFFT::TransformationType::TRANSFORM_FFT_COMPLEX>(n);
+        testComplexSineFFT<OTFFT::TransformationType::TRANSFORM_BLUESTEIN>(n);
+        testRealSineFFT(n);
     }
-#endif
 }
 
 BOOST_AUTO_TEST_CASE(TestBluestein)
@@ -276,27 +254,11 @@ BOOST_AUTO_TEST_CASE(TestBluestein)
       32411, 32768, 53743, 65536, 83476, 131072, 234643, 262144,
       463272, 524288
     };
-#ifdef OTFFT_WITH_SSE2
     for (auto n : N)
     {
-        testComplexFFT<OTFFT::TransformationType::TRANSFORM_BLUESTEIN, OTFFT::OptimizationType::OPTIMIZED_FFT_SSE2>(n);
-        testComplexSineFFT<OTFFT::TransformationType::TRANSFORM_BLUESTEIN, OTFFT::OptimizationType::OPTIMIZED_FFT_SSE2>(n);
+        testComplexFFT<OTFFT::TransformationType::TRANSFORM_BLUESTEIN>(n);
+        testComplexSineFFT<OTFFT::TransformationType::TRANSFORM_BLUESTEIN>(n);
     }
-#endif
-#ifdef OTFFT_WITH_AVX
-    for (auto n : N)
-    {
-        testComplexFFT<OTFFT::TransformationType::TRANSFORM_BLUESTEIN, OTFFT::OptimizationType::OPTIMIZED_FFT_AVX>(n);
-        testComplexSineFFT<OTFFT::TransformationType::TRANSFORM_BLUESTEIN, OTFFT::OptimizationType::OPTIMIZED_FFT_AVX>(n);
-    }
-#endif
-#ifdef OTFFT_WITH_AVX2
-    for (auto n : N)
-    {
-        testComplexFFT<OTFFT::TransformationType::TRANSFORM_BLUESTEIN, OTFFT::OptimizationType::OPTIMIZED_FFT_AVX2>(n);
-        testComplexSineFFT<OTFFT::TransformationType::TRANSFORM_BLUESTEIN, OTFFT::OptimizationType::OPTIMIZED_FFT_AVX2>(n);
-    }
-#endif
 }
 
 BOOST_AUTO_TEST_CASE(TestComplex)
@@ -306,27 +268,11 @@ BOOST_AUTO_TEST_CASE(TestComplex)
       32411, 32768, 53743, 65536, 83476, 131072, 234643, 262144,
       463272, 524288
     };
-#ifdef OTFFT_WITH_SSE2
     for (auto n : N)
     {
-        testComplexFFT<OTFFT::TransformationType::TRANSFORM_FFT_COMPLEX, OTFFT::OptimizationType::OPTIMIZED_FFT_SSE2>(n);
-        testComplexSineFFT<OTFFT::TransformationType::TRANSFORM_FFT_COMPLEX, OTFFT::OptimizationType::OPTIMIZED_FFT_SSE2>(n);
+        testComplexFFT<OTFFT::TransformationType::TRANSFORM_FFT_COMPLEX>(n);
+        testComplexSineFFT<OTFFT::TransformationType::TRANSFORM_FFT_COMPLEX>(n);
     }
-#endif
-#ifdef OTFFT_WITH_AVX
-    for (auto n : N)
-    {
-        testComplexFFT<OTFFT::TransformationType::TRANSFORM_FFT_COMPLEX, OTFFT::OptimizationType::OPTIMIZED_FFT_AVX>(n);
-        testComplexSineFFT<OTFFT::TransformationType::TRANSFORM_FFT_COMPLEX, OTFFT::OptimizationType::OPTIMIZED_FFT_AVX>(n);
-    }
-#endif
-#ifdef OTFFT_WITH_AVX2
-    for (auto n : N)
-    {
-        testComplexFFT<OTFFT::TransformationType::TRANSFORM_FFT_COMPLEX, OTFFT::OptimizationType::OPTIMIZED_FFT_AVX2>(n);
-        testComplexSineFFT<OTFFT::TransformationType::TRANSFORM_FFT_COMPLEX, OTFFT::OptimizationType::OPTIMIZED_FFT_AVX2>(n);
-    }
-#endif
 }
 
 BOOST_AUTO_TEST_CASE(TestReal)
@@ -336,27 +282,11 @@ BOOST_AUTO_TEST_CASE(TestReal)
       512, 2048, 4096, 16384, 32768, 65536, 131072,
       262144, 524288
     };
-#ifdef OTFFT_WITH_SSE2
     for (auto n : N)
     {
-        testRealFFT<OTFFT::OptimizationType::OPTIMIZED_FFT_SSE2>(n);
-        testRealSineFFT<OTFFT::OptimizationType::OPTIMIZED_FFT_SSE2>(n);
+        testRealFFT(n);
+        testRealSineFFT(n);
     }
-#endif
-#ifdef OTFFT_WITH_AVX
-    for (auto n : N)
-    {
-        testRealFFT<OTFFT::OptimizationType::OPTIMIZED_FFT_AVX>(n);
-        testRealSineFFT<OTFFT::OptimizationType::OPTIMIZED_FFT_AVX>(n);
-    }
-#endif
-#ifdef OTFFT_WITH_AVX2
-    for (auto n : N)
-    {
-        testRealFFT<OTFFT::OptimizationType::OPTIMIZED_FFT_AVX2>(n);
-        testRealSineFFT<OTFFT::OptimizationType::OPTIMIZED_FFT_AVX2>(n);
-    }
-#endif
 }
 
 BOOST_AUTO_TEST_CASE(TestRealMixedRadix)
@@ -368,27 +298,11 @@ BOOST_AUTO_TEST_CASE(TestRealMixedRadix)
         512 * 7, 1024 * 7, 2048 * 5,
         463272,
     };
-#ifdef OTFFT_WITH_SSE2
     for (auto n : N)
     {
-        testRealFFT<OTFFT::OptimizationType::OPTIMIZED_FFT_SSE2>(n);
-        testRealSineFFT<OTFFT::OptimizationType::OPTIMIZED_FFT_SSE2>(n);
+        testRealFFT(n);
+        testRealSineFFT(n);
     }
-#endif
-#ifdef OTFFT_WITH_AVX
-    for (auto n : N)
-    {
-        testRealFFT<OTFFT::OptimizationType::OPTIMIZED_FFT_AVX>(n);
-        testRealSineFFT<OTFFT::OptimizationType::OPTIMIZED_FFT_AVX>(n);
-    }
-#endif
-#ifdef OTFFT_WITH_AVX2
-    for (auto n : N)
-    {
-        testRealFFT<OTFFT::OptimizationType::OPTIMIZED_FFT_AVX2>(n);
-        testRealSineFFT<OTFFT::OptimizationType::OPTIMIZED_FFT_AVX2>(n);
-    }
-#endif
 }
 
 BOOST_AUTO_TEST_CASE(TestDCT)
@@ -397,24 +311,10 @@ BOOST_AUTO_TEST_CASE(TestDCT)
       8, 32, 512, 4096, 16384, 32768, 65536, 131072,
       262144, 463272, 524288
     };
-#ifdef OTFFT_WITH_SSE2
     for (auto n : N)
     {
-        testDCT<OTFFT::OptimizationType::OPTIMIZED_FFT_SSE2>(n);
+        testDCT(n);
     }
-#endif
-#ifdef OTFFT_WITH_AVX
-    for (auto n : N)
-    {
-        testDCT<OTFFT::OptimizationType::OPTIMIZED_FFT_AVX>(n);
-    }
-#endif
-#ifdef OTFFT_WITH_AVX2
-    for (auto n : N)
-    {
-        testDCT<OTFFT::OptimizationType::OPTIMIZED_FFT_AVX2>(n);
-    }
-#endif
 }
 
 BOOST_AUTO_TEST_SUITE_END()
