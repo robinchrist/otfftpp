@@ -171,6 +171,28 @@ namespace OTFFT
     RealDCTPtr createDCT(int n);
 
     ComplexFFTPtr createBluesteinFFT(int n);
+
+    /******************************************************************************
+    *  Build Info
+    ******************************************************************************/
+    bool builtWithSSE();
+    bool builtWithSSE_MATH();
+    bool builtWithSSE2();
+    bool builtWithSSE2_MATH();
+    bool builtWithSSE3();
+    bool builtWithSSSE3();
+    bool builtWithSSE4_1();
+    bool builtWithSSE4_2();
+    bool builtWithAVX();
+    bool builtWithAVX2();
+    bool builtWithAVX512BW();
+    bool builtWithAVX512CD();
+    bool builtWithAVX512DQ();
+    bool builtWithAVX512F();
+    bool builtWithAVX512VL();
+
+    bool builtWithOpenMP();
+    int getOpenMPMaxThreads();
 }
 
 #endif // otfft_h

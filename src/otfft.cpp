@@ -39,6 +39,10 @@
 #endif
 #endif
 
+#if _OPENMP
+#include <omp.h>
+#endif
+
 
 #include "otfftpp/detail/otfft_if.h"
 #include "otfftpp/detail/otfft_base.h"
@@ -64,5 +68,110 @@ namespace OTFFT
     ComplexFFTPtr createBluesteinFFT(int n)
     {
         return ComplexFFTPtr(new Bluestein(n));
+    }
+
+    bool builtWithSSE() {
+        #if __SSE__
+        return true;
+        #endif
+        return false;
+    }
+    bool builtWithSSE_MATH() {
+        #if __SSE_MATH__
+        return true;
+        #endif
+        return false;
+    }
+    bool builtWithSSE2() {
+        #if __SSE2__
+        return true;
+        #endif
+        return false;
+    }
+    bool builtWithSSE2_MATH() {
+        #if __SSE2_MATH__
+        return true;
+        #endif
+        return false;
+    }
+    bool builtWithSSE3() {
+        #if __SSE3__
+        return true;
+        #endif
+        return false;
+    }
+    bool builtWithSSSE3() {
+        #if __SSSE3__
+        return true;
+        #endif
+        return false;
+    }
+    bool builtWithSSE4_1() {
+        #if __SSE4_1__
+        return true;
+        #endif
+        return false;
+    }
+    bool builtWithSSE4_2() {
+        #if __SSE4_2__
+        return true;
+        #endif
+        return false;
+    }
+    bool builtWithAVX() {
+        #if __AVX__
+        return true;
+        #endif
+        return false;
+    }
+    bool builtWithAVX2() {
+        #if __AVX2__
+        return true;
+        #endif
+        return false;
+    }
+    bool builtWithAVX512BW() {
+        #if __AVX512BW__
+        return true;
+        #endif
+        return false;
+    }
+    bool builtWithAVX512CD() {
+        #if __AVX512CD__
+        return true;
+        #endif
+        return false;
+    }
+    bool builtWithAVX512DQ() {
+        #if __AVX512DQ__
+        return true;
+        #endif
+        return false;
+    }
+    bool builtWithAVX512F() {
+        #if __AVX512F__
+        return true;
+        #endif
+        return false;
+    }
+    bool builtWithAVX512VL() {
+        #if __AVX512VL__
+        return true;
+        #endif
+        return false;
+    }
+
+    bool builtWithOpenMP() {
+        #if _OPENMP
+        return true;
+        #endif
+        return false;
+    }
+
+    int getOpenMPMaxThreads() {
+        #if _OPENMP
+        return omp_get_max_threads();
+        #endif
+        return -1;
     }
 }

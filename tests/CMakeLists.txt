@@ -28,3 +28,13 @@ target_link_libraries(otfftpp-tests
 
 
 add_test(NAME otfftpp-tests COMMAND otfftpp-tests)
+
+
+add_executable(
+    otfftpp-print-vectorization
+    otfft_print_vectorization.cpp
+)
+target_link_libraries(otfftpp-print-vectorization
+    PRIVATE
+        otfftpp::otfftpp
+)

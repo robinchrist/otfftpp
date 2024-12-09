@@ -54,7 +54,7 @@ target_compile_definitions(otfftpp PRIVATE "USE_UNALIGNED_MEMORY=1")
 # This should handle some edge cases that would otherwise prevent optimization
 target_compile_options(otfftpp PRIVATE "-fno-math-errno")
 
-if(OTFFT_BUILD_TESTS)
+if(OTFFTPP_BUILD_TESTS)
     message(STATUS "Testing is enabled!")
     enable_testing()
     add_subdirectory(tests)
