@@ -17,37 +17,13 @@
 #define force_inline3
 #endif
 
-#ifdef _MSC_VER
-
-#if _M_IX86_FP >= 2
-#define __SSE2__ 1
-#endif
-#ifdef _M_X64
-#define __SSE2__ 1
-#define __SSE3__ 1
-#endif
-#ifdef __AVX__
-#define __SSE2__ 1
-#define __SSE3__ 1
-#endif
-#ifdef __AVX2__
-#define __SSE2__ 1
-#define __SSE3__ 1
-#define __FMA__  1
-#endif
-#ifdef __AVX512F__
-#define __SSE2__ 1
-#define __SSE3__ 1
-#define __FMA__  1
-#endif
-
-#endif // _MSC_VER
-
 //=============================================================================
 // User Defined Complex Number Class
 //=============================================================================
 
 #include <complex>
+#include <cstring>
+#include <memory>
 
 namespace OTFFT {
 
@@ -206,32 +182,49 @@ static inline complex_t expj(const double& theta) noexcept
 // Aligned Memory Allocator
 //=============================================================================
 
-#include <new>
-#include <immintrin.h>
-
-#ifdef __MINGW32__
-#include <malloc.h>
-#endif
-
 namespace OTFFT {
 
-#ifdef __SSE2__
-#ifndef __AVX__
-static inline void* simd_malloc(const size_t n) { return _mm_malloc(n, 16); }
-#endif
-#else
-static inline void* simd_malloc(const size_t n) { return malloc(n); }
-#endif
+inline void* generic_aligned_alloc(std::size_t size, std::size_t alignment) noexcept
+{
+    constexpr size_t N = alignof(void*);
 
-#ifdef __AVX__
+    if (alignment < N) {
+        alignment = N;
+    }
+
+    std::size_t n = size + alignment - N;
+    void* p = std::malloc(sizeof(void*) + n);
+    if (p) {
+        void* p2 = static_cast<char*>(p) + sizeof(p);
+        auto * const ap = static_cast<char*>(std::align(alignment, size, p2, n));
+        std::memcpy(ap - sizeof(p), &p, sizeof(p));
+
+        p = ap;
+    }
+    return p;
+}
+
+inline void generic_aligned_free(void* ptr) noexcept
+{
+    if(ptr) {
+        void* rp;
+        std::memcpy(&rp, static_cast<char*>(ptr) - sizeof(void*), sizeof(void*));
+        std::free(rp);
+    }
+}
+
+
 #ifdef __AVX512F__
-static inline void* simd_malloc(const size_t n) { return _mm_malloc(n, 64); }
+static inline void* simd_malloc(const size_t n) { return generic_aligned_alloc(n, 64); }
 #else
-static inline void* simd_malloc(const size_t n) { return _mm_malloc(n, 32); }
-#endif
+    #ifdef __AVX__
+    static inline void* simd_malloc(const size_t n) { return generic_aligned_alloc(n, 32); }
+    #else
+    static inline void* simd_malloc(const size_t n) { return generic_aligned_alloc(n, 16); }
+    #endif
 #endif
 
-static inline void simd_free(void* p) { _mm_free(p); }
+static inline void simd_free(void* p) { generic_aligned_free(p); }
 
 template <class T> struct simd_array
 {

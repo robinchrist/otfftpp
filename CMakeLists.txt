@@ -4,6 +4,8 @@ project(otfftpp CXX)
 option(OTFFTPP_BUILD_TESTS "Build tests" OFF)
 option(OTFFTPP_WITH_OPENMP "Use OpenMP" OFF)
 
+find_package(simde REQUIRED)
+
 add_library(
     otfftpp
 )
@@ -42,9 +44,11 @@ target_sources(
             include
 )
 
+target_link_libraries(otfftpp PRIVATE simde::simde)
+
 if(OTFFTPP_WITH_OPENMP)
-    find_package (OpenMP REQUIRED)
-    target_link_libraries (otfftpp PUBLIC OpenMP::OpenMP_CXX)
+    find_package(OpenMP REQUIRED)
+    target_link_libraries(otfftpp PUBLIC OpenMP::OpenMP_CXX)
 else()
     target_compile_definitions(otfftpp PRIVATE "DO_SINGLE_THREAD=1")
 endif()
