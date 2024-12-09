@@ -25,15 +25,12 @@
 #elif defined(PLAT_WINDOWS)
 #include <windows.h>
 #include <limits.h>
-#include <intrin.h>
-#include <immintrin.h>
 #else
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/time.h>
 #if defined(PLAT_LINUX)
-#include <x86intrin.h>
 #elif defined(PLAT_MACOS)
 #include <sys/sysctl.h>
 #endif
