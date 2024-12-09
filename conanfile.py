@@ -18,14 +18,16 @@ class otfftppRecipe(ConanFile):
         "fPIC": [True, False],
         "abi_affecting_cflags": ["ANY"], #comma separated list of c-flags, will be converted to a set for normalization and sorting
         "abi_affecting_cxxflags": ["ANY"], #comma separated list of c-flags, will be converted to a set for normalization and sorting
-        "with_openmp": [True, False]
+        "with_openmp": [True, False],
+        "build_testing": [True, False]
     }
     default_options = {
         "shared": False,
         "fPIC": True,
         "abi_affecting_cflags": "",
         "abi_affecting_cxxflags": "",
-        "with_openmp": False
+        "with_openmp": False,
+        "build_testing": False
     }
 
     # Sources are located in the same place as this recipe, copy them to the recipe
@@ -69,6 +71,9 @@ class otfftppRecipe(ConanFile):
         if self.options.with_openmp and self.settings.compiler in ["clang", "apple-clang"]:
             self.requires("llvm-openmp/17.0.6", transitive_headers=True, transitive_libs=True)
 
+    def build_requirements(self):
+        self.test_requires("boost/1.82.0")
+
     def layout(self):
         cmake_layout(self)
 
@@ -78,8 +83,8 @@ class otfftppRecipe(ConanFile):
 
         tc = CMakeToolchain(self)
 
-        tc.variables["OTFFTPP_BUILD_TESTS"] = False
         tc.variables["OTFFTPP_WITH_OPENMP"] = self.options.with_openmp
+        tc.variables["OTFFTPP_BUILD_TESTS"] = self.options.build_testing
 
         tc.extra_cflags.extend(self._abi_affecting_cflags())
         tc.extra_cxxflags.extend(self._abi_affecting_cxxflags())
