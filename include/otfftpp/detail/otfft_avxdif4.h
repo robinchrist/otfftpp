@@ -45,35 +45,35 @@ namespace OTFFT_AVXDIF4 { /////////////////////////////////////////////////////
             for (int p = 0; p < m; p++) {
                 const int sp = s*p;
                 const int s4p = 4*sp;
-                const emm w1p = dupez5(*twidT<4,N,1>(W,sp));
-                const emm w2p = dupez5(*twidT<4,N,2>(W,sp));
-                const emm w3p = dupez5(*twidT<4,N,3>(W,sp));
+                const zmm w1p = duppz5(*twidT<4,N,1>(W,sp));
+                const zmm w2p = duppz5(*twidT<4,N,2>(W,sp));
+                const zmm w3p = duppz5(*twidT<4,N,3>(W,sp));
                 for (int q = 0; q < s; q += 4) {
                     complex_vector xq_sp  = x + q + sp;
                     complex_vector yq_s4p = y + q + s4p;
 #if 0
-                    const emm a = getez4(xq_sp+N0);
-                    const emm b = getez4(xq_sp+N1);
-                    const emm c = getez4(xq_sp+N2);
-                    const emm d = getez4(xq_sp+N3);
-                    const emm  apc =       addez4(a, c);
-                    const emm  amc =       subez4(a, c);
-                    const emm  bpd =       addez4(b, d);
-                    const emm jbmd = jxez4(subez4(b, d));
+                    const zmm a = getpz4(xq_sp+N0);
+                    const zmm b = getpz4(xq_sp+N1);
+                    const zmm c = getpz4(xq_sp+N2);
+                    const zmm d = getpz4(xq_sp+N3);
+                    const zmm  apc =       addpz4(a, c);
+                    const zmm  amc =       subpz4(a, c);
+                    const zmm  bpd =       addpz4(b, d);
+                    const zmm jbmd = jxpz4(subpz4(b, d));
 #else
-                    const emm a = getez4(xq_sp+N0);
-                    const emm c = getez4(xq_sp+N2);
-                    const emm  apc =       addez4(a, c);
-                    const emm  amc =       subez4(a, c);
-                    const emm b = getez4(xq_sp+N1);
-                    const emm d = getez4(xq_sp+N3);
-                    const emm  bpd =       addez4(b, d);
-                    const emm jbmd = jxez4(subez4(b, d));
+                    const zmm a = getpz4(xq_sp+N0);
+                    const zmm c = getpz4(xq_sp+N2);
+                    const zmm  apc =       addpz4(a, c);
+                    const zmm  amc =       subpz4(a, c);
+                    const zmm b = getpz4(xq_sp+N1);
+                    const zmm d = getpz4(xq_sp+N3);
+                    const zmm  bpd =       addpz4(b, d);
+                    const zmm jbmd = jxpz4(subpz4(b, d));
 #endif
-                   setez4(yq_s4p+s*0,             addez4(apc,  bpd));
-                   setez4(yq_s4p+s*1, mulez4(w1p, subez4(amc, jbmd)));
-                   setez4(yq_s4p+s*2, mulez4(w2p, subez4(apc,  bpd)));
-                   setez4(yq_s4p+s*3, mulez4(w3p, addez4(amc, jbmd)));
+                   setpz4(yq_s4p+s*0,             addpz4(apc,  bpd));
+                   setpz4(yq_s4p+s*1, mulpz4(w1p, subpz4(amc, jbmd)));
+                   setpz4(yq_s4p+s*2, mulpz4(w2p, subpz4(apc,  bpd)));
+                   setpz4(yq_s4p+s*3, mulpz4(w3p, addpz4(amc, jbmd)));
                 }
             }
         }
@@ -275,40 +275,40 @@ namespace OTFFT_AVXDIF4 { /////////////////////////////////////////////////////
                 const int sp = s*p;
                 const int s4p = 4*sp;
 #if 0
-                const emm w1p = cnjez4(dupez5(*twidT<4,N,1>(W,sp)));
-                const emm w2p = cnjez4(dupez5(*twidT<4,N,2>(W,sp)));
-                const emm w3p = cnjez4(dupez5(*twidT<4,N,3>(W,sp)));
+                const zmm w1p = cnjpz4(duppz5(*twidT<4,N,1>(W,sp)));
+                const zmm w2p = cnjpz4(duppz5(*twidT<4,N,2>(W,sp)));
+                const zmm w3p = cnjpz4(duppz5(*twidT<4,N,3>(W,sp)));
 #else
-                const emm w1p = dupez5(conj(*twidT<4,N,1>(W,sp)));
-                const emm w2p = dupez5(conj(*twidT<4,N,2>(W,sp)));
-                const emm w3p = dupez5(conj(*twidT<4,N,3>(W,sp)));
+                const zmm w1p = duppz5(conj(*twidT<4,N,1>(W,sp)));
+                const zmm w2p = duppz5(conj(*twidT<4,N,2>(W,sp)));
+                const zmm w3p = duppz5(conj(*twidT<4,N,3>(W,sp)));
 #endif
                 for (int q = 0; q < s; q += 4) {
                     complex_vector xq_sp  = x + q + sp;
                     complex_vector yq_s4p = y + q + s4p;
 #if 0
-                    const emm a = getez4(xq_sp+N0);
-                    const emm b = getez4(xq_sp+N1);
-                    const emm c = getez4(xq_sp+N2);
-                    const emm d = getez4(xq_sp+N3);
-                    const emm  apc =       addez4(a, c);
-                    const emm  amc =       subez4(a, c);
-                    const emm  bpd =       addez4(b, d);
-                    const emm jbmd = jxez4(subez4(b, d));
+                    const zmm a = getpz4(xq_sp+N0);
+                    const zmm b = getpz4(xq_sp+N1);
+                    const zmm c = getpz4(xq_sp+N2);
+                    const zmm d = getpz4(xq_sp+N3);
+                    const zmm  apc =       addpz4(a, c);
+                    const zmm  amc =       subpz4(a, c);
+                    const zmm  bpd =       addpz4(b, d);
+                    const zmm jbmd = jxpz4(subpz4(b, d));
 #else
-                    const emm a = getez4(xq_sp+N0);
-                    const emm c = getez4(xq_sp+N2);
-                    const emm  apc =       addez4(a, c);
-                    const emm  amc =       subez4(a, c);
-                    const emm b = getez4(xq_sp+N1);
-                    const emm d = getez4(xq_sp+N3);
-                    const emm  bpd =       addez4(b, d);
-                    const emm jbmd = jxez4(subez4(b, d));
+                    const zmm a = getpz4(xq_sp+N0);
+                    const zmm c = getpz4(xq_sp+N2);
+                    const zmm  apc =       addpz4(a, c);
+                    const zmm  amc =       subpz4(a, c);
+                    const zmm b = getpz4(xq_sp+N1);
+                    const zmm d = getpz4(xq_sp+N3);
+                    const zmm  bpd =       addpz4(b, d);
+                    const zmm jbmd = jxpz4(subpz4(b, d));
 #endif
-                    setez4(yq_s4p+s*0,             addez4(apc,  bpd));
-                    setez4(yq_s4p+s*1, mulez4(w1p, addez4(amc, jbmd)));
-                    setez4(yq_s4p+s*2, mulez4(w2p, subez4(apc,  bpd)));
-                    setez4(yq_s4p+s*3, mulez4(w3p, subez4(amc, jbmd)));
+                    setpz4(yq_s4p+s*0,             addpz4(apc,  bpd));
+                    setpz4(yq_s4p+s*1, mulpz4(w1p, addpz4(amc, jbmd)));
+                    setpz4(yq_s4p+s*2, mulpz4(w2p, subpz4(apc,  bpd)));
+                    setpz4(yq_s4p+s*3, mulpz4(w3p, subpz4(amc, jbmd)));
                 }
             }
         }
