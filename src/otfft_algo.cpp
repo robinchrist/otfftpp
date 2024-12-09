@@ -152,6 +152,10 @@ namespace OTFFT
         y = &work;
     }
 
+    int FFT::getN() const noexcept {
+        return fft.N;
+    }
+
     void FFT::fwd(complex_vector  x) const noexcept
     {
         fft.fwd(x, y);
@@ -269,6 +273,10 @@ namespace OTFFT
                 U[Nd+p] = complex_t(1 - c, -s)/2;
                 U[N-p]  = complex_t(1 + s,  c)/2;
             }
+    }
+
+    int RFFT::getN() const noexcept {
+        return N;
     }
 
     void RFFT::fwd(const_double_vector x, complex_vector y) const noexcept
@@ -690,6 +698,10 @@ namespace OTFFT
         work2.setup(N); z = &work2;
     }
 
+    int DCT::getN() const noexcept {
+        return N;
+    }
+
     void DCT::fwd(double_vector  x) const noexcept
     {
         dct.fwd(x, y, z);
@@ -766,6 +778,10 @@ namespace OTFFT
             W[p]    = complex_t(c,  s);
             W[N2-p] = complex_t(c, -s);
         }
+    }
+
+    int Bluestein::getN() const noexcept {
+        return N;
     }
 
     void Bluestein::fwd(complex_vector x) const noexcept

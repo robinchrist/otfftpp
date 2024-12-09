@@ -47,6 +47,8 @@ namespace OTFFT
 
         void setup(int n) override;
 
+        int getN() const noexcept override;
+
         void fwd(complex_vector  x) const noexcept override;
         void fwd0(complex_vector x) const noexcept override;
         void fwdu(complex_vector x) const noexcept override;
@@ -74,6 +76,8 @@ namespace OTFFT
         ~RFFT();
 
         void setup(int n) override;
+
+        int getN() const noexcept override;
 
         void fwd(const_double_vector  x, complex_vector y) const noexcept override;
         void fwd0(const_double_vector x, complex_vector y) const noexcept override;
@@ -131,6 +135,8 @@ namespace OTFFT
 
         void setup(int n) override;
 
+        int getN() const noexcept override;
+
         void fwd(double_vector  x) const noexcept override;
         void fwd0(double_vector x) const noexcept override;
         void fwdn(double_vector x) const noexcept override;
@@ -159,6 +165,8 @@ namespace OTFFT
         ~Bluestein();
 
         void setup(int n) override;
+
+        int getN() const noexcept override;
 
         void fwd(complex_vector  x) const noexcept override;
         void fwd0(complex_vector x) const noexcept override;

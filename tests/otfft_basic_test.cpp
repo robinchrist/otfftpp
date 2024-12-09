@@ -87,10 +87,10 @@ namespace
                 return *this;
             }
 
-            OTFFT::RealFFTPtr rfft;
-            OTFFT::ComplexFFTPtr cfft;
-            OTFFT::RealDCTPtr dct;
-            OTFFT::ComplexFFTPtr bluestein;
+            std::unique_ptr<OTFFT::RealFFT> rfft;
+            std::unique_ptr<OTFFT::ComplexFFT> cfft;
+            std::unique_ptr<OTFFT::RealDCT> dct;
+            std::unique_ptr<OTFFT::ComplexFFT> bluestein;
         } fft;
     } MemberCapsule;
 

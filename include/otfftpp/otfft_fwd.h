@@ -11,8 +11,4 @@ namespace OTFFT
     class ComplexFFT;
     class RealFFT;
     class RealDCT;
-
-    using ComplexFFTPtr = std::unique_ptr<ComplexFFT>;
-    using RealFFTPtr = std::unique_ptr<RealFFT>;
-    using RealDCTPtr = std::unique_ptr<RealDCT>;
 }

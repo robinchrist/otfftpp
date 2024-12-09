@@ -45,6 +45,11 @@ namespace OTFFT
         virtual void setup(int n) = 0;
 
         /**
+         * @brief Return the sequence length with which the algorithm was set up
+         */
+        virtual int getN() const noexcept = 0;
+
+        /**
          * @brief Discrete forward transformation (with normalization by 1/N)
          */
         virtual void fwd(complex_vector  x) const noexcept = 0;
@@ -90,6 +95,11 @@ namespace OTFFT
          * @brief Setup the sequence length of the algorithm (up to 2^30)
          */
         virtual void setup(int n) = 0;
+
+        /**
+         * @brief Return the sequence length with which the algorithm was set up
+         */
+        virtual int getN() const noexcept = 0;
 
         /**
          * @brief Discrete forward transformation (with normalization by 1/N)
@@ -139,6 +149,11 @@ namespace OTFFT
         virtual void setup(int n) = 0;
 
         /**
+         * @brief Return the sequence length with which the algorithm was set up
+         */
+        virtual int getN() const noexcept = 0;
+
+        /**
          * @brief Discrete forward transformation (with normalization by 1/N)
          */
         virtual void fwd(double_vector  x) const noexcept = 0;
@@ -164,13 +179,13 @@ namespace OTFFT
         virtual void invn(double_vector x) const noexcept = 0;
     };
 
-    ComplexFFTPtr createComplexFFT(int n);
+    std::unique_ptr<ComplexFFT> createComplexFFT(int n);
 
-    RealFFTPtr createRealFFT(int n);
+    std::unique_ptr<RealFFT> createRealFFT(int n);
 
-    RealDCTPtr createDCT(int n);
+    std::unique_ptr<RealDCT> createDCT(int n);
 
-    ComplexFFTPtr createBluesteinFFT(int n);
+    std::unique_ptr<ComplexFFT> createBluesteinFFT(int n);
 
     /******************************************************************************
     *  Build Info

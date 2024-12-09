@@ -47,24 +47,24 @@
 
 namespace OTFFT
 {
-    ComplexFFTPtr createComplexFFT(int n)
+    std::unique_ptr<ComplexFFT> createComplexFFT(int n)
     {
-        return ComplexFFTPtr(new FFT(n));
+        return std::unique_ptr<ComplexFFT>(new FFT(n));
     }
 
-    RealFFTPtr createRealFFT(int n)
+    std::unique_ptr<RealFFT> createRealFFT(int n)
     {
-        return RealFFTPtr(new RFFT(n));
+        return std::unique_ptr<RealFFT>(new RFFT(n));
     }
 
-    RealDCTPtr createDCT(int n)
+    std::unique_ptr<RealDCT> createDCT(int n)
     {
-        return RealDCTPtr(new DCT(n));
+        return std::unique_ptr<RealDCT>(new DCT(n));
     }
 
-    ComplexFFTPtr createBluesteinFFT(int n)
+    std::unique_ptr<ComplexFFT> createBluesteinFFT(int n)
     {
-        return ComplexFFTPtr(new Bluestein(n));
+        return std::unique_ptr<ComplexFFT>(new Bluestein(n));
     }
 
     bool builtWithSSE() {
