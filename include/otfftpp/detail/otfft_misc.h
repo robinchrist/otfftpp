@@ -25,6 +25,8 @@
 #include <cmath>
 #include <new>
 
+#include "simde/x86/avx512.h"
+
 #ifndef M_PI
 #define M_PI 3.14159265358979323846264338327950288
 #endif
@@ -1167,17 +1169,15 @@ namespace OTFFT_MISC {
 // AVX-512
 //=============================================================================
 
-#include <immintrin.h>
-
 namespace OTFFT_MISC {
 
-typedef __m512d zmm;
+using zmm = simde__m512d;
 
 static inline zmm getpz4(const_complex_vector z) noexcept force_inline;
 static inline zmm getpz4(const_complex_vector z) noexcept
 {
 #ifdef USE_UNALIGNED_MEMORY
-    return _mm512_loadu_pd(&z->Re);
+    return simde_mm512_loadu_pd(&z->Re);
 #else
     return _mm512_load_pd(&z->Re);
 #endif
@@ -1187,7 +1187,7 @@ static inline void setpz4(complex_vector a, const zmm z) noexcept force_inline3;
 static inline void setpz4(complex_vector a, const zmm z) noexcept
 {
 #ifdef USE_UNALIGNED_MEMORY
-    _mm512_storeu_pd(&a->Re, z);
+    simde_mm512_storeu_pd(&a->Re, z);
 #else
     _mm512_store_pd(&a->Re, z);
 #endif
@@ -1197,43 +1197,44 @@ static inline zmm cnjpz4(const zmm xy) noexcept force_inline;
 static inline zmm cnjpz4(const zmm xy) noexcept
 {
     constexpr zmm zm = { 0.0, -0.0, 0.0, -0.0, 0.0, -0.0, 0.0, -0.0 };
-    return _mm512_xor_pd(zm, xy);
+    return simde_mm512_xor_pd(zm, xy);
 }
 static inline zmm jxpz4(const zmm xy) noexcept force_inline;
 static inline zmm jxpz4(const zmm xy) noexcept
 {
     const zmm xmy = cnjpz4(xy);
-    return _mm512_shuffle_pd(xmy, xmy, 0x55);
+    return simde_mm512_shuffle_pd(xmy, xmy, 0x55);
 }
 
 static inline zmm addpz4(const zmm a, const zmm b) noexcept force_inline;
 static inline zmm addpz4(const zmm a, const zmm b) noexcept
 {
-    return _mm512_add_pd(a, b);
+    return simde_mm512_add_pd(a, b);
 }
 static inline zmm subpz4(const zmm a, const zmm b) noexcept force_inline;
 static inline zmm subpz4(const zmm a, const zmm b) noexcept
 {
-    return _mm512_sub_pd(a, b);
+    return simde_mm512_sub_pd(a, b);
 }
 static inline zmm mulpd4(const zmm a, const zmm b) noexcept force_inline;
 static inline zmm mulpd4(const zmm a, const zmm b) noexcept
 {
-    return _mm512_mul_pd(a, b);
+    return simde_mm512_mul_pd(a, b);
 }
 static inline zmm divpd4(const zmm a, const zmm b) noexcept force_inline;
 static inline zmm divpd4(const zmm a, const zmm b) noexcept
 {
-    return _mm512_div_pd(a, b);
+    return simde_mm512_div_pd(a, b);
 }
 
 static inline zmm mulpz4(const zmm ab, const zmm xy) noexcept force_inline;
 static inline zmm mulpz4(const zmm ab, const zmm xy) noexcept
 {
-    const zmm aa = _mm512_unpacklo_pd(ab, ab);
-    const zmm bb = _mm512_unpackhi_pd(ab, ab);
-    const zmm yx = _mm512_shuffle_pd(xy, xy, 0x55);
-    return _mm512_fmaddsub_pd(aa, xy, _mm512_mul_pd(bb, yx));
+    const zmm aa = simde_mm512_unpacklo_pd(ab, ab);
+    const zmm bb = simde_mm512_unpackhi_pd(ab, ab);
+    const zmm yx = simde_mm512_shuffle_pd(xy, xy, 0x55);
+    //TODO: This instruction does not yet exist in SIMDe, an issue has been filed.
+    return simde_mm512_fmaddsub_pd(aa, xy, simde_mm512_mul_pd(bb, yx));
 }
 
 template <int N, int mode> static inline zmm scalepz4(const zmm z) noexcept force_inline;
@@ -1253,7 +1254,7 @@ static inline zmm v8xpz4(const zmm xy) noexcept
     constexpr double r = M_SQRT1_2;
     constexpr zmm rr = { r, r, r, r, r, r, r, r };
     const zmm myx = jxpz4(xy);
-    return _mm512_mul_pd(rr, _mm512_add_pd(xy, myx));
+    return simde_mm512_mul_pd(rr, simde_mm512_add_pd(xy, myx));
 }
 
 static inline zmm w8xpz4(const zmm xy) noexcept force_inline;
@@ -1261,8 +1262,8 @@ static inline zmm w8xpz4(const zmm xy) noexcept
 {
     constexpr double r = M_SQRT1_2;
     constexpr zmm rr = { r, r, r, r, r, r, r, r };
-    const zmm ymx = cnjpz4(_mm512_shuffle_pd(xy, xy, 0x55));
-    return _mm512_mul_pd(rr, _mm512_add_pd(xy, ymx));
+    const zmm ymx = cnjpz4(simde_mm512_shuffle_pd(xy, xy, 0x55));
+    return simde_mm512_mul_pd(rr, simde_mm512_add_pd(xy, ymx));
 }
 
 static inline zmm h1xpz4(const zmm xy) noexcept force_inline;
@@ -1296,7 +1297,7 @@ static inline zmm hdxpz4(const zmm xy) noexcept
 static inline zmm duppz4(const xmm x) noexcept force_inline;
 static inline zmm duppz4(const xmm x) noexcept
 {
-    return _mm512_broadcast_f64x2(x);
+    return simde_mm512_broadcast_f64x2(x);
 }
 
 static inline zmm duppz5(const complex_t& z) noexcept force_inline;
@@ -1308,6 +1309,7 @@ static inline zmm duppz5(const complex_t& z) noexcept
 } // namespace OTFFT_MISC
 
 #else
+//TODO: Remove as soon as _mm512_fmaddsub_pd is implemented in SIMDe
 //=============================================================================
 // AVX-512 Emulation
 //=============================================================================
