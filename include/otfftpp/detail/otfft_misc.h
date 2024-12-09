@@ -25,8 +25,10 @@
 #include <cmath>
 #include <new>
 
-#include "simde/x86/avx512.h"
+#include "simde/x86/sse2.h"
+#include "simde/x86/sse3.h"
 #include "simde/x86/avx.h"
+#include "simde/x86/avx512.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846264338327950288
@@ -227,39 +229,32 @@ constexpr int OMP_THRESHOLD_W = 1<<15;
 
 } // namespace OTFFT_MISC
 
-#if defined(__SSE2__) && defined(USE_INTRINSIC)
-//=============================================================================
-// SSE2/SSE3
-//=============================================================================
-
-#include <emmintrin.h>
-
 namespace OTFFT_MISC {
 
-    typedef __m128d xmm;
+    using xmm = simde__m128d;
 
     static inline xmm cmplx(const double& x, const double& y) noexcept force_inline;
     static inline xmm cmplx(const double& x, const double& y) noexcept
     {
-        return _mm_setr_pd(x, y);
+        return simde_mm_setr_pd(x, y);
     }
 
     static inline xmm getpz(const complex_t& z) noexcept force_inline;
     static inline xmm getpz(const complex_t& z) noexcept
     {
 #ifdef USE_UNALIGNED_MEMORY
-        return _mm_loadu_pd(&z.Re);
+        return simde_mm_loadu_pd(&z.Re);
 #else
-        return _mm_load_pd(&z.Re);
+        return simde_mm_load_pd(&z.Re);
 #endif
     }
     static inline xmm getpz(const_double_vector x) noexcept force_inline;
     static inline xmm getpz(const_double_vector x) noexcept
     {
 #ifdef USE_UNALIGNED_MEMORY
-        return _mm_loadu_pd(x);
+        return simde_mm_loadu_pd(x);
 #else
-        return _mm_load_pd(x);
+        return simde_mm_load_pd(x);
 #endif
     }
 
@@ -267,18 +262,18 @@ namespace OTFFT_MISC {
     static inline void setpz(complex_t& z, const xmm x) noexcept
     {
 #ifdef USE_UNALIGNED_MEMORY
-        _mm_storeu_pd(&z.Re, x);
+        simde_mm_storeu_pd(&z.Re, x);
 #else
-        _mm_store_pd(&z.Re, x);
+        simde_mm_store_pd(&z.Re, x);
 #endif
     }
     static inline void setpz(double_vector x, const xmm z) noexcept force_inline3;
     static inline void setpz(double_vector x, const xmm z) noexcept
     {
 #ifdef USE_UNALIGNED_MEMORY
-        _mm_storeu_pd(x, z);
+        simde_mm_storeu_pd(x, z);
 #else
-        _mm_store_pd(x, z);
+        simde_mm_store_pd(x, z);
 #endif
     }
 
@@ -292,46 +287,46 @@ namespace OTFFT_MISC {
     static inline xmm cnjpz(const xmm xy) noexcept
     {
         constexpr xmm zm = { 0.0, -0.0 };
-        return _mm_xor_pd(zm, xy);
+        return simde_mm_xor_pd(zm, xy);
     }
     static inline xmm jxpz(const xmm xy) noexcept force_inline;
     static inline xmm jxpz(const xmm xy) noexcept
     {
         const xmm xmy = cnjpz(xy);
-        return _mm_shuffle_pd(xmy, xmy, 1);
+        return simde_mm_shuffle_pd(xmy, xmy, 1);
     }
     static inline xmm negpz(const xmm xy) noexcept force_inline;
     static inline xmm negpz(const xmm xy) noexcept
     {
         constexpr xmm mm = { -0.0, -0.0 };
-        return _mm_xor_pd(mm, xy);
+        return simde_mm_xor_pd(mm, xy);
     }
     static inline xmm mjxpz(const xmm xy) noexcept force_inline;
     static inline xmm mjxpz(const xmm xy) noexcept
     {
-        const xmm yx = _mm_shuffle_pd(xy, xy, 1);
+        const xmm yx = simde_mm_shuffle_pd(xy, xy, 1);
         return cnjpz(yx);
     }
 
     static inline xmm addpz(const xmm a, const xmm b) noexcept force_inline;
     static inline xmm addpz(const xmm a, const xmm b) noexcept
     {
-        return _mm_add_pd(a, b);
+        return simde_mm_add_pd(a, b);
     }
     static inline xmm subpz(const xmm a, const xmm b) noexcept force_inline;
     static inline xmm subpz(const xmm a, const xmm b) noexcept
     {
-        return _mm_sub_pd(a, b);
+        return simde_mm_sub_pd(a, b);
     }
     static inline xmm mulpd(const xmm a, const xmm b) noexcept force_inline;
     static inline xmm mulpd(const xmm a, const xmm b) noexcept
     {
-        return _mm_mul_pd(a, b);
+        return simde_mm_mul_pd(a, b);
     }
     static inline xmm divpd(const xmm a, const xmm b) noexcept force_inline;
     static inline xmm divpd(const xmm a, const xmm b) noexcept
     {
-        return _mm_div_pd(a, b);
+        return simde_mm_div_pd(a, b);
     }
 
     template <int N, int mode> static inline xmm scalepz(const xmm z) noexcept force_inline;
@@ -365,101 +360,44 @@ static xmm modqpz(const_complex_vector W, const int p) noexcept
 
 } // namespace OTFFT_MISC
 
-#if defined(__SSE3__)
 //-----------------------------------------------------------------------------
 // SSE3
 //-----------------------------------------------------------------------------
 
-#ifdef __FMA__
-#include <immintrin.h>
-#else
-#include <pmmintrin.h>
-#endif
-
 namespace OTFFT_MISC {
 
     static inline xmm haddpz(const xmm ab, const xmm xy) noexcept force_inline;
     static inline xmm haddpz(const xmm ab, const xmm xy) noexcept
     {
-        return _mm_hadd_pd(ab, xy); // (a + b, x + y)
+        return simde_mm_hadd_pd(ab, xy); // (a + b, x + y)
     }
 
     static inline xmm mulpz(const xmm ab, const xmm xy) noexcept force_inline;
     static inline xmm mulpz(const xmm ab, const xmm xy) noexcept
     {
-        const xmm aa = _mm_unpacklo_pd(ab, ab);
-        const xmm bb = _mm_unpackhi_pd(ab, ab);
-        const xmm yx = _mm_shuffle_pd(xy, xy, 1);
-#ifdef __FMA__
-        return _mm_fmaddsub_pd(aa, xy, _mm_mul_pd(bb, yx));
-#else
-        return _mm_addsub_pd(_mm_mul_pd(aa, xy), _mm_mul_pd(bb, yx));
-#endif
+        const xmm aa = simde_mm_unpacklo_pd(ab, ab);
+        const xmm bb = simde_mm_unpackhi_pd(ab, ab);
+        const xmm yx = simde_mm_shuffle_pd(xy, xy, 1);
+        return simde_mm_fmaddsub_pd(aa, xy, _mm_mul_pd(bb, yx));
     }
 
     static inline xmm divpz(const xmm ab, const xmm xy) noexcept force_inline;
     static inline xmm divpz(const xmm ab, const xmm xy) noexcept
     {
-        const xmm x2y2 = _mm_mul_pd(xy, xy);
-        const xmm r2r2 = _mm_hadd_pd(x2y2, x2y2);
-        return _mm_div_pd(mulpz(ab, cnjpz(xy)), r2r2);
+        const xmm x2y2 = simde_mm_mul_pd(xy, xy);
+        const xmm r2r2 = simde_mm_hadd_pd(x2y2, x2y2);
+        return simde_mm_div_pd(mulpz(ab, cnjpz(xy)), r2r2);
     }
 
     static inline xmm v8xpz(const xmm xy) noexcept force_inline;
     static inline xmm v8xpz(const xmm xy) noexcept
     {
         constexpr xmm rr = { M_SQRT1_2, M_SQRT1_2 };
-        const xmm yx = _mm_shuffle_pd(xy, xy, 1);
-        return _mm_mul_pd(rr, _mm_addsub_pd(xy, yx));
+        const xmm yx = simde_mm_shuffle_pd(xy, xy, 1);
+        return simde_mm_mul_pd(rr, simde_mm_addsub_pd(xy, yx));
     }
 
 } // namespace OTFFT_MISC
-
-#else
-//-----------------------------------------------------------------------------
-// SSE3 Emulation
-//-----------------------------------------------------------------------------
-
-namespace OTFFT_MISC {
-
-    static inline xmm haddpz(const xmm ab, const xmm xy) noexcept force_inline;
-    static inline xmm haddpz(const xmm ab, const xmm xy) noexcept
-    {
-        const xmm ba = _mm_shuffle_pd(ab, ab, 1);
-        const xmm yx = _mm_shuffle_pd(xy, xy, 1);
-        const xmm apb = _mm_add_sd(ab, ba);
-        const xmm xpy = _mm_add_sd(xy, yx);
-        return _mm_shuffle_pd(apb, xpy, 0); // (a + b, x + y)
-    }
-
-    static inline xmm mulpz(const xmm ab, const xmm xy) noexcept force_inline;
-    static inline xmm mulpz(const xmm ab, const xmm xy) noexcept
-    {
-        const xmm aa = _mm_unpacklo_pd(ab, ab);
-        const xmm bb = _mm_unpackhi_pd(ab, ab);
-        return _mm_add_pd(_mm_mul_pd(aa, xy), _mm_mul_pd(bb, jxpz(xy)));
-    }
-
-    static inline xmm divpz(const xmm ab, const xmm xy) noexcept force_inline;
-    static inline xmm divpz(const xmm ab, const xmm xy) noexcept
-    {
-        const xmm x2y2 = _mm_mul_pd(xy, xy);
-        const xmm y2x2 = _mm_shuffle_pd(x2y2, x2y2, 1);
-        const xmm r2r2 = _mm_add_pd(x2y2, y2x2);
-        return _mm_div_pd(mulpz(ab, cnjpz(xy)), r2r2);
-    }
-
-    static inline xmm v8xpz(const xmm xy) noexcept force_inline;
-    static inline xmm v8xpz(const xmm xy) noexcept
-    {
-        constexpr xmm rr = { M_SQRT1_2, M_SQRT1_2 };
-        return _mm_mul_pd(rr, _mm_add_pd(xy, jxpz(xy)));
-    }
-
-} // namespace OTFFT_MISC
-
-//-----------------------------------------------------------------------------
-#endif // __SSE3__
 
 namespace OTFFT_MISC {
 
@@ -467,8 +405,8 @@ namespace OTFFT_MISC {
     static inline xmm w8xpz(const xmm xy) noexcept
     {
         constexpr xmm rr = { M_SQRT1_2, M_SQRT1_2 };
-        const xmm ymx = cnjpz(_mm_shuffle_pd(xy, xy, 1));
-        return _mm_mul_pd(rr, _mm_add_pd(xy, ymx));
+        const xmm ymx = cnjpz(simde_mm_shuffle_pd(xy, xy, 1));
+        return simde_mm_mul_pd(rr, simde_mm_add_pd(xy, ymx));
     }
 
     static inline xmm h1xpz(const xmm xy) noexcept force_inline;
@@ -500,199 +438,6 @@ namespace OTFFT_MISC {
     }
 } // namespace OTFFT_MISC
 
-#else
-//=============================================================================
-// SSE2/SSE3 Emulation
-//=============================================================================
-
-namespace OTFFT_MISC {
-
-    struct xmm { double Re, Im; };
-
-    static inline xmm cmplx(const double& x, const double& y) noexcept force_inline;
-    static inline xmm cmplx(const double& x, const double& y) noexcept
-    {
-        const xmm z = { x, y };
-        return z;
-    }
-
-    static inline xmm getpz(const complex_t& z) noexcept force_inline;
-    static inline xmm getpz(const complex_t& z) noexcept
-    {
-        const xmm x = { z.Re, z.Im };
-        return x;
-    }
-    static inline xmm getpz(const_double_vector x) noexcept force_inline;
-    static inline xmm getpz(const_double_vector x) noexcept
-    {
-        const xmm z = { x[0], x[1] };
-        return z;
-    }
-
-    static inline void setpz(complex_t& z, const xmm& x) noexcept force_inline3;
-    static inline void setpz(complex_t& z, const xmm& x) noexcept
-    {
-        z.Re = x.Re; z.Im = x.Im;
-    }
-    static inline void setpz(double_vector x, const xmm z) noexcept force_inline3;
-    static inline void setpz(double_vector x, const xmm z) noexcept
-    {
-        x[0] = z.Re; x[1] = z.Im;
-    }
-
-    static inline void swappz(complex_t& x, complex_t& y) noexcept force_inline3;
-    static inline void swappz(complex_t& x, complex_t& y) noexcept
-    {
-        const xmm z = getpz(x); setpz(x, getpz(y)); setpz(y, z);
-    }
-
-    static inline xmm cnjpz(const xmm& z) noexcept force_inline;
-    static inline xmm cnjpz(const xmm& z) noexcept
-    {
-        const xmm x = { z.Re, -z.Im };
-        return x;
-    }
-    static inline xmm jxpz(const xmm& z) noexcept force_inline;
-    static inline xmm jxpz(const xmm& z) noexcept
-    {
-        const xmm x = { -z.Im, z.Re };
-        return x;
-    }
-    static inline xmm negpz(const xmm& z) noexcept force_inline;
-    static inline xmm negpz(const xmm& z) noexcept
-    {
-        const xmm x = { -z.Re, -z.Im };
-        return x;
-    }
-    static inline xmm mjxpz(const xmm& z) noexcept force_inline;
-    static inline xmm mjxpz(const xmm& z) noexcept
-    {
-        const xmm x = { z.Im, -z.Re };
-        return x;
-    }
-
-    static inline xmm addpz(const xmm& a, const xmm& b) noexcept force_inline;
-    static inline xmm addpz(const xmm& a, const xmm& b) noexcept
-    {
-        const xmm x = { a.Re + b.Re, a.Im + b.Im };
-        return x;
-    }
-    static inline xmm subpz(const xmm& a, const xmm& b) noexcept force_inline;
-    static inline xmm subpz(const xmm& a, const xmm& b) noexcept
-    {
-        const xmm x = { a.Re - b.Re, a.Im - b.Im };
-        return x;
-    }
-    static inline xmm mulpd(const xmm& a, const xmm& b) noexcept force_inline;
-    static inline xmm mulpd(const xmm& a, const xmm& b) noexcept
-    {
-        const xmm x = { a.Re*b.Re, a.Im*b.Im };
-        return x;
-    }
-    static inline xmm divpd(const xmm& a, const xmm& b) noexcept force_inline;
-    static inline xmm divpd(const xmm& a, const xmm& b) noexcept
-    {
-        const xmm x = { a.Re/b.Re, a.Im/b.Im };
-        return x;
-    }
-
-    template <int N, int mode> static inline xmm scalepz(const xmm z) noexcept force_inline;
-    template <int N, int mode> static inline xmm scalepz(const xmm z) noexcept
-    {
-        constexpr double scale =
-            mode == scale_1       ? 1.0           :
-            mode == scale_unitary ? 1.0/mysqrt(N) :
-            mode == scale_length  ? 1.0/N         : 0.0;
-        constexpr xmm sv = { scale, scale };
-        return mode == scale_1 ? z : mulpd(sv, z);
-    }
-
-template <int N, int s>
-static xmm modqpz(const_complex_vector W, const int p) noexcept
-{
-    constexpr int Nq = N/4;
-    constexpr int log_Nq = mylog2(Nq);
-    const int sp = s*p;
-    const int q = sp >> log_Nq;
-    const int r = sp & (Nq-1);
-    const xmm x = getpz(W[r]);
-    switch (q & 3) {
-        case 0: return x;
-        case 1: return mjxpz(x);
-        case 2: return negpz(x);
-        case 3: return jxpz(x);
-    }
-    return xmm();
-}
-
-    static inline xmm mulpz(const xmm& a, const xmm& b) noexcept force_inline;
-    static inline xmm mulpz(const xmm& a, const xmm& b) noexcept
-    {
-        const xmm x = { a.Re*b.Re - a.Im*b.Im, a.Re*b.Im + a.Im*b.Re };
-        return x;
-    }
-
-    static inline xmm divpz(const xmm& a, const xmm& b) noexcept force_inline;
-    static inline xmm divpz(const xmm& a, const xmm& b) noexcept
-    {
-        const double b2 = b.Re*b.Re + b.Im*b.Im;
-        const xmm acb = mulpz(a, cnjpz(b));
-        const xmm x = { acb.Re/b2, acb.Im/b2 };
-        return x;
-    }
-
-    static inline xmm haddpz(const xmm& ab, const xmm& xy) noexcept force_inline;
-    static inline xmm haddpz(const xmm& ab, const xmm& xy) noexcept
-    {
-        const xmm x = { ab.Re + ab.Im, xy.Re + xy.Im };
-        return x;
-    }
-
-    static inline xmm v8xpz(const xmm& z) noexcept force_inline;
-    static inline xmm v8xpz(const xmm& z) noexcept
-    {
-        const xmm x = { M_SQRT1_2*(z.Re - z.Im), M_SQRT1_2*(z.Re + z.Im) };
-        return x;
-    }
-
-    static inline xmm w8xpz(const xmm& z) noexcept force_inline;
-    static inline xmm w8xpz(const xmm& z) noexcept
-    {
-        const xmm x = { M_SQRT1_2*(z.Re + z.Im), M_SQRT1_2*(z.Im - z.Re) };
-        return x;
-    }
-
-    static inline xmm h1xpz(const xmm xy) noexcept force_inline;
-    static inline xmm h1xpz(const xmm xy) noexcept
-    {
-        constexpr xmm h1 = { H1X, H1Y };
-        return mulpz(h1, xy);
-    }
-
-    static inline xmm h3xpz(const xmm xy) noexcept force_inline;
-    static inline xmm h3xpz(const xmm xy) noexcept
-    {
-        constexpr xmm h3 = { -H1Y, -H1X };
-        return mulpz(h3, xy);
-    }
-
-    static inline xmm hfxpz(const xmm xy) noexcept force_inline;
-    static inline xmm hfxpz(const xmm xy) noexcept
-    {
-        constexpr xmm hf = { H1X, -H1Y };
-        return mulpz(hf, xy);
-    }
-
-    static inline xmm hdxpz(const xmm xy) noexcept force_inline;
-    static inline xmm hdxpz(const xmm xy) noexcept
-    {
-        constexpr xmm hd = { -H1Y, H1X };
-        return mulpz(hd, xy);
-    }
-
-} // namespace OTFFT_MISC
-
-#endif // __SSE2__
 
 
 namespace OTFFT_MISC {
