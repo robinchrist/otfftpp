@@ -282,7 +282,7 @@ constexpr int OMP_THRESHOLD = 1<<13;
     {
         inline void operator()(complex_vector x, complex_vector y) const noexcept
         {
-            zeroupper();
+
             complex_vector z = eo ? y : x;
             const xmm z0 = scalepz<8,mode>(getpz(z[0]));
             const xmm z1 = scalepz<8,mode>(getpz(z[1]));
@@ -626,7 +626,7 @@ constexpr int OMP_THRESHOLD = 1<<13;
     {
         inline void operator()(complex_vector x, complex_vector y) const noexcept
         {
-            zeroupper();
+
             complex_vector z = eo ? y : x;
             const xmm z0 = scalepz<8,mode>(getpz(z[0]));
             const xmm z1 = scalepz<8,mode>(getpz(z[1]));

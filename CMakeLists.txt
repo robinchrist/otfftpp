@@ -57,6 +57,9 @@ endif()
 target_compile_definitions(otfftpp PRIVATE "USE_UNALIGNED_MEMORY=1")
 # This should handle some edge cases that would otherwise prevent optimization
 target_compile_options(otfftpp PRIVATE "-fno-math-errno")
+# Temporary Workaround: Clang generates a lot of unwanted warning: AVX vector argument of type 'const ymm' (aka 'const simde__m256') without 'avx' enabled changes the ABI [-Wpsabi]
+# This should probably be fixed in SIMDe upstream
+target_compile_options(otfftpp PRIVATE "-Wno-psabi")
 
 if(OTFFTPP_BUILD_TESTS)
     message(STATUS "Testing is enabled!")

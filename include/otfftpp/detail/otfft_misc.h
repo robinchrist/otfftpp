@@ -950,8 +950,6 @@ namespace OTFFT_MISC {
 
     struct ymm { xmm lo, hi; };
 
-    static inline void zeroupper() noexcept {}
-
     static inline ymm cmplx2(const double& a, const double& b, const double& c, const double &d) noexcept force_inline;
     static inline ymm cmplx2(const double& a, const double& b, const double& c, const double &d) noexcept
     {

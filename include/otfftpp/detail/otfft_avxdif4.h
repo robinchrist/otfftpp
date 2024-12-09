@@ -173,7 +173,7 @@ namespace OTFFT_AVXDIF4 { /////////////////////////////////////////////////////
     {
         inline void operator()(complex_vector x, complex_vector y) const noexcept
         {
-            zeroupper();
+
             complex_vector z = eo ? y : x;
             const xmm a = scalepz<4,mode>(getpz(x[0]));
             const xmm b = scalepz<4,mode>(getpz(x[1]));
@@ -214,7 +214,7 @@ namespace OTFFT_AVXDIF4 { /////////////////////////////////////////////////////
     {
         inline void operator()(complex_vector x, complex_vector y) const noexcept
         {
-            zeroupper();
+
             complex_vector z = eo ? y : x;
             const xmm a = scalepz<2,mode>(getpz(x[0]));
             const xmm b = scalepz<2,mode>(getpz(x[1]));
@@ -408,7 +408,7 @@ namespace OTFFT_AVXDIF4 { /////////////////////////////////////////////////////
     {
         inline void operator()(complex_vector x, complex_vector y) const noexcept
         {
-            zeroupper();
+
             complex_vector z = eo ? y : x;
             const xmm a = scalepz<4,mode>(getpz(x[0]));
             const xmm b = scalepz<4,mode>(getpz(x[1]));
@@ -449,7 +449,7 @@ namespace OTFFT_AVXDIF4 { /////////////////////////////////////////////////////
     {
         inline void operator()(complex_vector x, complex_vector y) const noexcept
         {
-            zeroupper();
+
             complex_vector z = eo ? y : x;
             const xmm a = scalepz<2,mode>(getpz(x[0]));
             const xmm b = scalepz<2,mode>(getpz(x[1]));

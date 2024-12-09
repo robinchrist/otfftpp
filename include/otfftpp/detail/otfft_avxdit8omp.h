@@ -291,7 +291,7 @@ namespace OTFFT_AVXDIT8omp { //////////////////////////////////////////////////
         {
 #pragma omp single
             {
-                zeroupper();
+
                 complex_vector z = eo ? y : x;
                 const xmm z0 = scalepz<8,mode>(getpz(z[0]));
                 const xmm z1 = scalepz<8,mode>(getpz(z[1]));
@@ -644,7 +644,7 @@ namespace OTFFT_AVXDIT8omp { //////////////////////////////////////////////////
         {
 #pragma omp single
             {
-                zeroupper();
+
                 complex_vector z = eo ? y : x;
                 const xmm z0 = scalepz<8,mode>(getpz(z[0]));
                 const xmm z1 = scalepz<8,mode>(getpz(z[1]));

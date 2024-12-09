@@ -541,7 +541,7 @@ namespace OTFFT_AVXDIT16 { ////////////////////////////////////////////////////
     {
         inline void operator()(complex_vector x, complex_vector y) const noexcept
         {
-            zeroupper();
+
             complex_vector z = eo ? y : x;
             const xmm z0 = scalepz<16,mode>(getpz(z[0x0]));
             const xmm z1 = scalepz<16,mode>(getpz(z[0x1]));
@@ -1203,7 +1203,7 @@ namespace OTFFT_AVXDIT16 { ////////////////////////////////////////////////////
     {
         inline void operator()(complex_vector x, complex_vector y) const noexcept
         {
-            zeroupper();
+
             complex_vector z = eo ? y : x;
             const xmm z0 = scalepz<16,mode>(getpz(z[0x0]));
             const xmm z1 = scalepz<16,mode>(getpz(z[0x1]));
