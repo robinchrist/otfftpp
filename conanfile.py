@@ -3,7 +3,15 @@ from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout, CMakeDeps
 
 class otfftppRecipe(ConanFile):
     name = "otfftpp"
+    version = "0.0.1"
+    package_type = "library"
 
+    license = "MIT"
+    url = "https://github.com/robinchrist/otfftpp"
+    description = "OTFFT is a high-speed FFT library using the Stockham's algorithm and SIMD"
+    topics = ("FFT", "SIMD")
+
+    # Binary configuration
     settings = "os", "compiler", "build_type", "arch"
     options = {
         "shared": [True, False],
@@ -19,6 +27,9 @@ class otfftppRecipe(ConanFile):
         "abi_affecting_cxxflags": "",
         "with_openmp": False
     }
+
+    # Sources are located in the same place as this recipe, copy them to the recipe
+    exports_sources = "CMakeLists.txt", "include/*", "src/*", "tests/*"
 
     def _abi_affecting_cflags(self, info=False):
         options = self.info.options if info else self.options
@@ -67,7 +78,7 @@ class otfftppRecipe(ConanFile):
 
         tc = CMakeToolchain(self)
 
-        tc.variables["OTFFTPP_BUILD_TESTS"] = True
+        tc.variables["OTFFTPP_BUILD_TESTS"] = False
         tc.variables["OTFFTPP_WITH_OPENMP"] = self.options.with_openmp
 
         tc.extra_cflags.extend(self._abi_affecting_cflags())
