@@ -1,34 +1,24 @@
 # OTFFT
-[![Github All Releases](https://img.shields.io/github/downloads/DEWETRON/otfft/total)]()
 
-OTFFT is a high-speed FFT library using the Stockham's algorithm and AVX.
+OTFFT is a high-speed FFT library using the Stockham's algorithm and SIMD (SSE2 / SSE3 / AVX / AVX512)
 In addition, C++ template metaprogramming technique is used in OTFFT.
 And OTFFT is a mixed-radix FFT.
 
-# Build Status
-It should be able to compile/use the sources using Visual Studio on Windows and GCC on Linux.
-| CI Server | Status |
-| ---------:| ------ |
-| Travis CI Ubuntu 14.04 | [![travis-ci](https://travis-ci.org/DEWETRON/otfft.svg?branch=master)](https://travis-ci.org/DEWETRON/otfft) |
-| GitHub Ubuntu 20.04 | [![CMake](https://github.com/DEWETRON/otfft/actions/workflows/cmake.yml/badge.svg)](https://github.com/DEWETRON/otfft/actions/workflows/cmake.yml) |
-| Appveyor VS2013 | [![Build status](https://ci.appveyor.com/api/projects/status/1hxy8w9laeaf44ln?svg=true)](https://ci.appveyor.com/project/DEWETRON/otfft) |
 
 # Reasons for the fork
-OTFFT is developed by OK Ojisan (Takuya OKAHISA).
-It's original homepage is http://wwwa.pikara.ne.jp/okojisan/otfft-en/.
+This is a fork of https://github.com/DEWETRON/otfft
 
-The DEWETRON fork uses the original source code with improvements:
-* multi CPU ISS builds (AVX2, AVX, SSE2,...)
-* unit test coverage
-* Use of standard OpenMP
-
-## Status
-There is a continuous effort to keep the FFT computations in sync with the upstream OTFFT version.
-Relevant changed from version 11.5 have been merged into this repository.
+Why?
+- Replace manual vector emulation code with SIMDe (SIMD Everywhere https://github.com/simd-everywhere/simde) for good performance on ARM Platforms (ex: Apple M1/M2/M3/M4)
+- Remove the multi-CPU arch build - I found that very cumbersome and generally not useful. The recommended way is passing the right CPU flags from the outside, not automagically generating them in CMake
+- Update CMake to modern, concise and readable
+- Provide as Conan Package
+- Generally clean up code A LOT
 
 
 # How to use
-Just run cmake to get an appropriate build environment depending on your used build system and operating system.
+## Building
+TODO...
 
 
 # Complex-to-Complex FFT
