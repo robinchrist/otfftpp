@@ -378,7 +378,7 @@ namespace OTFFT_MISC {
         const xmm aa = simde_mm_unpacklo_pd(ab, ab);
         const xmm bb = simde_mm_unpackhi_pd(ab, ab);
         const xmm yx = simde_mm_shuffle_pd(xy, xy, 1);
-        return simde_mm_fmaddsub_pd(aa, xy, _mm_mul_pd(bb, yx));
+        return simde_mm_fmaddsub_pd(aa, xy, simde_mm_mul_pd(bb, yx));
     }
 
     static inline xmm divpz(const xmm ab, const xmm xy) noexcept force_inline;
@@ -681,7 +681,7 @@ static inline zmm getpz4(const_complex_vector z) noexcept
 #ifdef USE_UNALIGNED_MEMORY
     return simde_mm512_loadu_pd(&z->Re);
 #else
-    return _mm512_load_pd(&z->Re);
+    return simde_mm512_load_pd(&z->Re);
 #endif
 }
 
@@ -691,7 +691,7 @@ static inline void setpz4(complex_vector a, const zmm z) noexcept
 #ifdef USE_UNALIGNED_MEMORY
     simde_mm512_storeu_pd(&a->Re, z);
 #else
-    _mm512_store_pd(&a->Re, z);
+    simde_mm512_store_pd(&a->Re, z);
 #endif
 }
 
