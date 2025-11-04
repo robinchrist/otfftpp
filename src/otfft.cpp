@@ -67,6 +67,14 @@ namespace OTFFT
         return std::unique_ptr<ComplexFFT>(new Bluestein(n));
     }
 
+    bool builtInDebugMode() {
+        #ifdef NDEBUG
+        return false;
+        #else
+        return true;
+        #endif
+    }
+
     bool builtWithSSE() {
         #if __SSE__
         return true;

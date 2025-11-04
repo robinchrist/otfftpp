@@ -190,6 +190,7 @@ namespace OTFFT
     /******************************************************************************
     *  Build Info
     ******************************************************************************/
+    bool builtInDebugMode();
     bool builtWithSSE();
     bool builtWithSSE_MATH();
     bool builtWithSSE2();
