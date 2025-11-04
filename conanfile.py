@@ -74,7 +74,7 @@ class otfftppRecipe(ConanFile):
             self.requires("llvm-openmp/17.0.6", transitive_headers=True, transitive_libs=True)
 
     def build_requirements(self):
-        self.test_requires("boost/1.82.0")
+        self.test_requires("boost/[^1.82.0]")
 
     def layout(self):
         cmake_layout(self)
