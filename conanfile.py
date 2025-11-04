@@ -5,7 +5,7 @@ import os
 
 class otfftppRecipe(ConanFile):
     name = "otfftpp"
-    version = "0.0.5"
+    version = "0.0.6"
     package_type = "library"
 
     license = "MIT"
