@@ -18,30 +18,18 @@ class otfftppRecipe(ConanFile):
     options = {
         "shared": [True, False],
         "fPIC": [True, False],
-        "abi_affecting_cflags": ["ANY"], #comma separated list of c-flags, will be converted to a set for normalization and sorting
-        "abi_affecting_cxxflags": ["ANY"], #comma separated list of c-flags, will be converted to a set for normalization and sorting
         "with_openmp": [True, False],
         "build_testing": [True, False]
     }
     default_options = {
         "shared": False,
         "fPIC": True,
-        "abi_affecting_cflags": "",
-        "abi_affecting_cxxflags": "",
         "with_openmp": False,
         "build_testing": False
     }
 
     # Sources are located in the same place as this recipe, copy them to the recipe
     exports_sources = "CMakeLists.txt", "include/*", "src/*", "tests/*"
-
-    def _abi_affecting_cflags(self, info=False):
-        options = self.info.options if info else self.options
-        return sorted(set(str(options.abi_affecting_cflags).split(",")))
-
-    def _abi_affecting_cxxflags(self, info=False):
-        options = self.info.options if info else self.options
-        return sorted(set(str(options.abi_affecting_cxxflags).split(",")))
 
     @property
     def _openmp_flags(self):
@@ -88,9 +76,6 @@ class otfftppRecipe(ConanFile):
         tc.variables["OTFFTPP_WITH_OPENMP"] = self.options.with_openmp
         tc.variables["OTFFTPP_BUILD_TESTS"] = self.options.build_testing
 
-        tc.extra_cflags.extend(self._abi_affecting_cflags())
-        tc.extra_cxxflags.extend(self._abi_affecting_cxxflags())
-
         tc.generate()
 
     def build(self):
@@ -103,11 +88,6 @@ class otfftppRecipe(ConanFile):
         
         cmake = CMake(self)
         cmake.install()
-
-    def package_id(self):
-        # normalize the the extra flags (sorted+comma separated)
-        self.info.options.abi_affecting_cflags = ",".join(self._abi_affecting_cflags(info=True))
-        self.info.options.abi_affecting_cxxflags = ",".join(self._abi_affecting_cxxflags(info=True))
 
     def package_info(self):
         self.cpp_info.libs = ["otfftpp"]
